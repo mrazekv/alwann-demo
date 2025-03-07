@@ -1,7 +1,6 @@
 import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
+//import typescriptLogo from './typescript.svg'
+//import viteLogo from '/vite.svg'
 import { showDetails } from './details.ts'
 import Plotly from 'plotly.js-dist';
 import { Individual, DataType } from './database.ts';
@@ -13,17 +12,9 @@ import a from "../data/data.json" assert { type: "json" };
 import aacc from "../data/accurate.json" assert { type: "json" };
 
 
-
-
-
 const data: DataType[] = a as DataType[];
 
 const accurate_data: DataType[] = aacc as DataType[];
-
-console.log("Orig data");
-console.log(data);
-console.log(accurate_data);
-
 
 var model = 'resnet_14_v2';
 var systolic = 'systolic_np_a3';
@@ -44,34 +35,31 @@ function getRunData(data: DataType[], run: number) {
 }
 
 var filteredData = filterData(data, model, systolic);
-var filteredAccurate: any = accurate_data.filter((d) => d["model"] === model)[0]["data"];
+var filteredAccurate = accurate_data.filter((d) => d["model"] === model)[0]["data"];
 
 var runs = getRuns(filteredData);
 
 console.log(getRuns(filteredData));
 
-
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-
-    <select id="model"></select>
-    <select id="systolic"></select>
-
-    <!--<a href="https://vite.dev" target="_blank">
+/*    <!--<a href="https://vite.dev" target="_blank">
       <img src="${viteLogo}" class="logo" alt="Vite logo" />
     </a>
     <a href="https://www.typescriptlang.org/" target="_blank">
       <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>-->
+    </a> -->*/
+
+document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
+  <div>
+    <h1>AI accelerator design space exploration</h1>
+    <select id="model"></select>
+    <select id="systolic"></select>
+
+
     <h2>Generation <span id="generations">0</span></h2>
     <div id="myDiv"></div>
     <button class="rundis" id="runAnimation">Optimize</button>
     <button id="restart">Random</button>
     <button class="rundis" id="final">Final solution</button>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
     <div id="elementDetails"></div>
     <div id='hoverinfo'></div>
   </div>
@@ -132,8 +120,8 @@ systolicSelect.addEventListener('change', () => {
 
 
 var t1 = {
-  x: [0.1, 0.5],
-  y: [10, 50],
+  x: [0.1, 0.5] as number[],
+  y: [10, 50] as number[],
   type: 'scatter',
   // no lines
   mode: 'markers',
@@ -145,8 +133,8 @@ var t1 = {
 };
 
 var t2 = {
-  x: [],
-  y: [],
+  x: [] as number[],
+  y: [] as number[],
   fullData: [] as Individual[], // just as hint
   type: 'scatter',
   // no lines
@@ -182,12 +170,11 @@ Plotly.newPlot('myDiv', plotly_data, {
 });
 
 
-function setData(dataAll: any) {
+function setData(dataAll: DataType) {
 
   // hide details
   document.querySelector<HTMLDivElement>("#elementDetails")!.innerHTML = '';
 
-  //return;
   var data: Individual[] = dataAll["data"];
   console.log(dataAll);
   t1["x"] = data.map((d) => d["power"]);
@@ -202,16 +189,9 @@ function setData(dataAll: any) {
   console.log(filteredAccurate);
 
 
-  // if transition update with 100ms transition
-
-  //Plotly.update('myDiv', update, {});
-
-
   Plotly.redraw('myDiv');
 
-  document.querySelector<HTMLSpanElement>('#generations')!.innerText = dataAll["run"];
-
-  //Plotly.restyle('myDiv', update);
+  document.querySelector<HTMLSpanElement>('#generations')!.innerText = dataAll["run"].toString();
 }
 
 
@@ -232,15 +212,8 @@ function setFirstData() {
 
 setFirstData();
 
-// set hover action on scatter
-(document.querySelector<HTMLDivElement>('#myDiv') as any).addEventListener('plotly_hover', function (data: any) {
-  var infotext = data.points.map(function (d: any) {
-    return ('x=' + d.x + ' y=' + d.y.toPrecision(3));
-  });
 
-  document.querySelector<HTMLDivElement>('#hoverinfo')!.innerHTML = infotext.join('<br/>');
-}
-);
+/* Button actions */
 
 document.querySelector<HTMLButtonElement>('#runAnimation')!.addEventListener('click', () => {
 
@@ -276,11 +249,8 @@ document.querySelector<HTMLButtonElement>('#runAnimation')!.addEventListener('cl
 document.querySelector<HTMLButtonElement>('#restart')!.addEventListener('click', setFirstData);
 
 document.querySelector<HTMLButtonElement>('#final')!.addEventListener('click', () => {
-
-  
   setData(getRunData(filteredData, runs[runs.length - 1]));
   console.log(runs);
 });
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
 
