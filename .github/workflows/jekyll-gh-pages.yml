@@ -24,19 +24,30 @@ concurrency:
 jobs:
   # Build job
   build:
+
     runs-on: ubuntu-latest
+
+    #strategy:
+    #  matrix:
+    #    node-version: [18.x, 20.x, 22.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./
-          destination: ./_site
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18.x
+        cache: 'npm'
+    - run: npm ci
+    - run: npm run build --if-present
+    #- run: npm test
+  # create artifact
+    - name: Archive production artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist
+        path: dist
 
   # Deployment job
   deploy:
