@@ -43,10 +43,11 @@ jobs:
     - run: npm run build --if-present
     #- run: npm test
   # create artifact
-    - name: Archive production artifact
-      uses: actions/upload-artifact@v3
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
       with:
-        path: dist
+        path: build/
 
   # Deployment job
   deploy:
