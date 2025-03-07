@@ -29,10 +29,17 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present
     #- run: npm test
+  # create artifact
+    - name: Archive production artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist
+        path: dist
+
     # push to github pages
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@4.1.5
       with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BRANCH: gh-pages
         FOLDER: dist
