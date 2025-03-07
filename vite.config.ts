@@ -6,6 +6,6 @@ export default defineConfig({
         // https://rollupjs.org/configuration-options/
       },
     },
-    base: "/alwann/",
+    base: "./",
   })
 
