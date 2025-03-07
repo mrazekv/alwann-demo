@@ -1,5 +1,5 @@
 import { nnConfig, multConfig } from './nns.ts';
-import { Individual } from './database.ts';
+import type { Individual } from './database.ts';
 import {interpolateViridis} from "d3-scale-chromatic";
 
 

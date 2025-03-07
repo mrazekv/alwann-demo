@@ -1,5 +1,5 @@
 <template>
-        <div ref="plotly" style="width:100%;height:300px;"></div>
+    <div ref="plotly"></div>
 </template>
 
 <script setup lang="ts">
@@ -11,12 +11,16 @@ import { Individual } from "../database";
 const props = defineProps({
     data: {
         type: Object,
-        default: { x: [], y: [], records:[] },
+        default: { x: [], y: [], records: [] },
     },
     data2: {
         type: Object,
-        default: { x: [], y: [], records:[] },
+        default: { x: [], y: [], records: [] },
     },
+    highlight: {
+        type: Number,
+        default: -1,
+    }
 });
 
 const emit = defineEmits(['point-clicked']);
@@ -34,7 +38,7 @@ var t1 = {
     hovertemplate: 'Power: %{x:.3f} mW<br>Accuracy: %{y:.2f}%<extra></extra>',
     // hide legend
     //showlegend: true
-    name: 'Pareto front'
+    name: 'Candidate solutions'
 };
 
 var t2 = {
@@ -50,7 +54,16 @@ var t2 = {
     name: 'Accurate solution'
 };
 
-var plotly_data = [t1, t2];
+var t3 = {
+    x: [] as number[],
+    y: [] as number[],
+    type: 'scatter',
+    // no lines
+    mode: 'markers',
+    marker: { size: 12, color: '#000000' },
+    showlegend: false,
+};
+var plotly_data = [t1, t2, t3];
 
 onMounted(() => {
 
@@ -81,11 +94,12 @@ onMounted(() => {
         //alert("klik " + data.points[0].x + " ");
         // get the power value
         //data.points[0].data.fullData[ind]
-        emit('point-clicked', data.points[0].data.records[ind]);
+        emit('point-clicked', { data: data.points[0].data, record: data.points[0].data.records[ind], index: ind });
     });
 
 
     watchEffect(() => {
+        if (!plotly.value) return;
         console.log('plot new data');
         t1.x = [...props.data.x];
         t1.y = [...props.data.y];
@@ -94,6 +108,13 @@ onMounted(() => {
         t2.x = [...props.data2.x];
         t2.y = [...props.data2.y];
         t2.records = [...props.data2.records];
+
+        t3.x = [];
+        t3.y = [];
+        if ((props.highlight >= 0) && (props.highlight < props.data.x.length)) {
+            t3.x = [props.data.x[props.highlight]];
+            t3.y = [props.data.y[props.highlight]];
+        }
         //console.log('t2', t2, plotly.value);
         Plotly.redraw(plotly.value);
     });
@@ -101,6 +122,11 @@ onMounted(() => {
 
 });
 
-
-
 </script>
+
+<style scoped>
+div {
+    width: 100%;
+    height: 300px;
+}
+</style>
