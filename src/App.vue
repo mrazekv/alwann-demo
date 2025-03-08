@@ -193,6 +193,10 @@
             <span v-for="(item, index) in modelinfo.layer_macs" :key="index"><span v-if="index > 0">, </span>{{ (item/1e6).toFixed(1) }}M</span>
             MACs
             </div>
+
+            <div>
+                Encoded candidate solution: {{ detail.chrom }}
+            </div>
           
             <div v-if="detailAssignments" class="mt-3">
                 <h3>Designed HW accelerator</h3>
