@@ -51,7 +51,7 @@
                         add onto it with another sentence and probably just keep going until
                         we run out of words.
                     </p>
-<!--                    <a href="#" class="btn btn-primary"> Primary button </a> -->
+                    <!--                    <a href="#" class="btn btn-primary"> Primary button </a> -->
                 </div>
             </div>
         </div>
@@ -83,7 +83,7 @@
                 <div class="d-flex align-items-center">
                     <div class="progress flex-grow-1 me-4" @click="updateRunIdx($event)">
                         <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
-                            :style="{ width: `${parseInt(100 * runidx / runs.length)}%` }"></div>
+                            :style="{ width: `${(100 * runidx / runs.length).toFixed(0)}%` }"></div>
                     </div>
                     <RoundButton v-model="isPlaying" />
                 </div>
@@ -96,98 +96,221 @@
 
         <div v-if="detail">
             <h3 class="pb-2 mb-4 border-bottom">
-                Detail of a candidate solution #{{ detailidx }}
+                Detail of candidate solution #{{ detailidx }}
             </h3>
 
 
-            <div class="row">
-                <div class="col-3">
-
-                    <!-- Value  -->
+            <div class="row cards1">
+                <div class="col-2">
                     <div class="card">
                         <div class="card-body">
-                            <div class="row align-items-center gx-0">
-                                <div class="col">
-
-                                    <!-- Title -->
-                                    <h6 class="text-uppercase text-body-secondary mb-2">
-                                        Accuracy
-                                    </h6>
-
-                                    <!-- Heading -->
-                                    <span class="h2 mb-0">
-                                        {{ (detail.accuracy * 100.0).toFixed(1) }} <small>%</small>
-                                    </span>
-                                    <!-- Badge -->
-                                    <span class="badge text-bg-success-subtle mt-n1">
-                                        CIFAR-10
-                                    </span>
-                                </div>
-
-                            </div> <!-- / .row -->
+                            <h6 class="text-uppercase text-body-secondary mb-2">
+                                DNN accuracy
+                            </h6>
+                            <span class="h2 mb-0">
+                                {{ (detail.accuracy * 100.0).toFixed(1) }} <small>%</small>
+                            </span><br>
+                            <span class="badge text-bg-success-subtle mt-n1">
+                                CIFAR-10
+                            </span>
                         </div>
                     </div>
-
-                </div>
-                <div class="col-3">
-
-                    <!-- Hours -->
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="row align-items-center gx-0">
-                                <div class="col">
-
-                                    <!-- Title -->
-                                    <h6 class="text-uppercase text-body-secondary mb-2">
-                                        Power consumption
-                                    </h6>
-
-                                    <!-- Heading -->
-                                    <span class="h2 mb-0">
-                                        {{ detail.power.toFixed(3) }} <small>mW</small>
-                                    </span>
-                                    <span class="badge text-bg-success-subtle mt-n1">
-                                        per multiplier
-                                    </span>
-
-                                </div>
- 
-                            </div> <!-- / .row -->
-                        </div>
-                    </div>
-
                 </div>
 
-                <div class="col-6">
-
-                    <!-- Value  -->
+                <div class="col-2">
                     <div class="card">
                         <div class="card-body">
-                            <div class="row align-items-center gx-0">
-                                <div class="col">
+                            <h6 class="text-uppercase text-body-secondary mb-2">
+                                Accuracy drop
+                            </h6>
 
-                                    <!-- Title -->
-                                    <h6 class="text-uppercase text-body-secondary mb-2">
-                                        Tile configuration
-                                    </h6>
-
-                                    <!-- Heading -->
-                                    <span class="h5 mb-0">
-                                        {{ detail.chrom.slice(0, detail.tiles).join(', ') }}
-                                    </span>
-                                </div>
-                            </div> <!-- / .row -->
+                            <span class="h2 mb-0">
+                                {{ detail.accuracy_drop.toFixed(0) }} <small>%</small>
+                            </span><br>
+                            <span class="badge text-bg-success-subtle mt-n1">
+                                to baseline
+                            </span>
                         </div>
                     </div>
+                </div>
 
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="text-uppercase text-body-secondary mb-2">
+                                Power consumption
+                            </h6>
+                            <span class="h2 mb-0">
+                                {{ detail.power.toFixed(3) }} <small>mW</small>
+                            </span><br>
+                            <span class="badge text-bg-success-subtle mt-n1">
+                                per what?
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="text-uppercase text-body-secondary mb-2">
+                                Power reduction
+                            </h6>
+                            <span class="h2 mb-0">
+                                {{ detail.power_reduction_pct.toFixed(0) }} <small>%</small>
+                            </span><br>
+                            <span class="badge text-bg-success-subtle mt-n1">
+                                to baseline
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="text-uppercase text-body-secondary mb-2">
+                                Computational complexity
+                            </h6>
+                            <span class="h2 mb-0">
+                                {{ (detail.macs_total) ? detail.macs_total.toFixed(0) : '&mdash;' }} <small>MACs</small>
+                            </span>
+                            <br>&nbsp;
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <!-- Mapping: {{ detail.chrom.slice(detail.tiles) }}
             <br> -->
 
-            TODO: nezobrazuje se chybny pocet vrstev? - jaktoze je lichy pocet 2D conv?
-            <ResNet :size="detail.multconf.length" :assignment="detailAssignments" />
+            <ResNet :size="detail.multconf.length" :assignment="detailAssignments" :colors="colors" />
+
+            <div v-if="detailAssignments" class="mt-3">
+                <h3>Designed HW accelerator</h3>
+                <h4>Structure</h4>
+                The HW accelerator consists of {{ detailAssignments.tiles.length }} systolic arrays, array for special
+                layers and memory unit.
+                The crossbar connects the tiles and the memory unit.
+
+                <div class="row mt-4">
+                    <div class="col-6">
+                        <svg height="100" version="1.1"
+                            :viewBox="`0 0 ${(detailAssignments.tiles.length - 1) * 30 + 25 + 34 + 20} 30.692`"
+                            xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#"
+                            xmlns:dc="http://purl.org/dc/elements/1.1/"
+                            xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+                            <g transform="translate(-7.805 -111)">
+                                <g id="gmem"
+                                    :transform="`translate(${(detailAssignments.tiles.length - 1) * 30 - 62.5},0)`">
+                                    <rect x="127" y="111.13" width="21.167" height="10.583" fill="#fff" stroke="#000"
+                                        stroke-width=".265" />
+                                    <text x="137.31866" y="117.353" fill="#000000" font-family="sans-serif"
+                                        font-size="3.5278px" letter-spacing="0px" stroke-width=".26458"
+                                        word-spacing="0px" style="line-height:1.25" xml:space="preserve">
+                                        <tspan x="137.31866" y="117.353" font-family="Arial" stroke-width=".26458"
+                                            text-align="center" text-anchor="middle">Memory</tspan>
+                                    </text>
+                                    <rect x="121.71" y="115.1" width="5.2917" height="2.6458" stroke="#000"
+                                        stroke-width=".26458" />
+                                </g>
+                                <g id="gcross">
+                                    <rect id="crossbar" x="34.396" y="112.46"
+                                        :width="(detailAssignments.tiles.length - 1) * 30 + 25" height="7.9375"
+                                        fill="#ccc" stroke="#000" stroke-width=".265" />
+                                    <text :x="(2 * 34.396 + (detailAssignments.tiles.length - 1) * 30 + 25) / 2"
+                                        y="117.70441" fill="#000000" font-family="sans-serif" font-size="3.5278px"
+                                        letter-spacing="0px" stroke-width=".26458" word-spacing="0px"
+                                        style="line-height:1.25" xml:space="preserve">
+                                        <tspan font-family="Arial" stroke-width=".26458" text-align="center"
+                                            text-anchor="middle">Cross Bar</tspan>
+                                    </text>
+                                </g>
+                                <g v-for="(item, index) in detailAssignments.tiles" :key="index"
+                                    :transform="`translate(${index * 30},0)`">
+                                    <rect transform="rotate(-90)" x="-125.69" y="44.979" width="5.2917" height="2.6458"
+                                        stroke="#000" stroke-width=".26458" />
+                                    <rect x="31.75" y="125.69" width="29.104" height="15.875" :fill="colors[index]"
+                                        stroke="#000" stroke-width=".265" />
+                                    <text x="46.513481" y="137.85172" fill="#000000" font-family="sans-serif"
+                                        font-size="3.5278px" letter-spacing="0px" stroke-width=".26458"
+                                        word-spacing="0px" style="line-height:1.25" xml:space="preserve">
+                                        <tspan x="46.513481" y="137.85172" font-family="Arial" stroke-width=".26458"
+                                            text-align="center" text-anchor="middle">{{ item.mul.id }}</tspan>
+                                    </text>
+                                    <text x="46.650414" y="131.52295" fill="#000000" font-family="sans-serif"
+                                        font-size="3.5278px" letter-spacing="0px" stroke-width=".26458"
+                                        word-spacing="0px" style="line-height:1.25" xml:space="preserve">
+                                        <tspan x="46.650414" y="131.52295" font-family="Arial" font-weight="bold"
+                                            stroke-width=".26458" text-align="center" text-anchor="middle">Tile #{{
+                                                index + 1
+                                            }}</tspan>
+                                    </text>
+                                </g>
+                                <g id="gother">
+                                    <rect x="7.9375" y="111.13" width="21.167" height="10.583" fill="#1a1a1a"
+                                        stroke="#000" stroke-width=".265" />
+                                    <text x="18.136606" y="115.58382" fill="#ffffff" font-family="Arial"
+                                        font-size="3.5278px" letter-spacing="0px" stroke-width=".26458"
+                                        text-anchor="middle" word-spacing="0px" style="line-height:1.05"
+                                        xml:space="preserve">
+                                        <tspan x="18.136606" y="115.58382" text-align="center">Other </tspan>
+                                        <tspan x="18.136606" y="119.32882" text-align="center">layers</tspan>
+                                    </text>
+                                    <rect x="29.104" y="115.1" width="5.2917" height="2.6458" stroke="#000"
+                                        stroke-width=".26458" />
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="col-6">
+
+                    </div>
+                </div>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th colspan="7" style="text-align: center">Parameters of the multipliers</th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th>multiplier</th>
+                            <th>power</th>
+                            <th>area</th>
+                            <th>delay</th>
+                            <th>ep</th>
+                            <th>mae</th>
+                            <th>mre</th>
+                            <th>wce</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, index) in detailAssignments.tiles" :key="index">
+                            <td><b>Tile #{{ index + 1 }}</b></td>
+                            <td>{{ item.mul.id }}</td>
+                            <td>{{ item.mul.power.toFixed(3) }} mW <span class="badge text-bg-success-subtle">{{
+                                -item.mul.power_pct.toFixed(2) }}%</span></td>
+                            <td>{{ item.mul.area.toFixed(3) }} <span class="badge text-bg-success-subtle">{{
+                                    -item.mul.area_pct.toFixed(2) }}%</span></td>
+                            <td>{{ item.mul.delay.toFixed(3) }} <span class="badge text-bg-success-subtle">{{
+                                -item.mul.delay_pct.toFixed(2) }}%</span></td>
+                            <td>{{ item.mul.ep_pct.toFixed(2) }}%</td>
+                            <td>{{ item.mul.mae_pct.toFixed(2) }}%</td>
+                            <td>{{ item.mul.mre_pct.toFixed(2) }}%</td>
+                            <td>{{ item.mul.wce_pct.toFixed(2) }}%</td>
+
+
+                        </tr>
+                    </tbody>
+                </table>
+
+
+                <h4>Computational plan</h4>
+                TODO
+            </div>
+
         </div>
 
     </div>
@@ -202,14 +325,16 @@ import BootstrapIcons from "./components/BootstrapIcons.vue";
 import Graph from "./components/Graph.vue";
 import RoundButton from "./components/RoundButton.vue";
 import ResNet from "./components/ResNet.vue";
-import type { Individual, DataType } from "./database";
+import type { Individual, DataType, ResNetAssignment } from "./database";
 
-import data from "@/../data/data.json";
-import accurate_data from "@/../data/accurate.json";
+import data_ from "@/../data/data.json";
+import accurate_data_ from "@/../data/accurate.json";
+import { nnConfig, multConfig } from './nns.ts';
 
-const typedData: DataType[] = data as DataType[];
-const typedAccurateData: DataType[] = accurate_data as DataType[];
+const data: DataType[] = data_ as DataType[];
+const accurate_data: DataType[] = accurate_data_ as DataType[];
 
+const colors = ['#d1dff2', '#fdeedb', '#e6ecca', '#f1dff2'];
 
 function filterData(data: DataType[], model: string, systolic: string) {
     //filteredAccurate = accurate_data.filter((d) => d["model"] === model)[0]["data"];
@@ -250,10 +375,10 @@ selected.value.array = arrays.value[0].value;
 
 
 
-let filteredData = ref([]);
-let filteredAccurateData = ref([]);
-let runData = ref([]);
-let runs = ref([]);
+let filteredData = ref([] as DataType[]);
+let filteredAccurateData = ref([] as Individual[]);
+let runData = ref({} as DataType);
+let runs = ref([] as number[]);
 
 function updatedata() {
     filteredData.value = filterData(data, selected.value.model, selected.value.array);
@@ -262,6 +387,18 @@ function updatedata() {
         accurate_data.filter((d) => d["model"] === selected.value.model)[0]["data"];
 
     runs.value = getRuns(filteredData.value);
+}
+
+function updaterundata() {
+    runData.value = getRunData(filteredData.value, runidx.value % runs.value.length);
+
+    //sort rundata data according to power and accuracy pair
+    runData.value.data.sort((a, b) => {
+        if (a["power"] === b["power"]) {
+            return b["accuracy"] - a["accuracy"];
+        }
+        return a["power"] - b["power"];
+    });
 }
 
 let runidx = ref(0);
@@ -285,22 +422,20 @@ watch(() => selected.value.model + '.' + selected.value.array, (newVal, oldVal) 
     runidx.value = 0;
     detailidx.value = null;
     //detail.value = null;
+    updaterundata();
 });
 
-var plotdata = ref({ x: [], y: [], records: [] });
-var plotdata2 = ref({ x: [], y: [], records: [] });
+interface PlotData {
+    x: number[];
+    y: number[];
+    records: Individual[];
+};
+
+var plotdata = ref({ x: [], y: [], records: [] } as PlotData);
+var plotdata2 = ref({ x: [], y: [], records: [] } as PlotData);
 
 watch(runidx, (newVal, oldVal) => {
-    runData.value = getRunData(filteredData.value, newVal % runs.value.length);
-
-    //sort rundata data according to power and accuracy pair
-    runData.value.data.sort((a, b) => {
-        if (a["power"] === b["power"]) {
-            return b["accuracy"] - a["accuracy"];
-        }
-        return a["power"] - b["power"];
-    });
-
+    updaterundata();
     let rd = runData.value;
     //console.log(newVal, oldVal);
     //console.log(rd.data);
@@ -315,41 +450,67 @@ watch(runidx, (newVal, oldVal) => {
     };
 });
 
-let pointClicked = (evt) => {
+let pointClicked = (evt: any) => {
     if (!evt) return;
     console.log('point', evt, evt.index);
+    isPlaying.value = false;
     //detail.value = evt;
     detailidx.value = evt.index;
 };
+
+interface Detail extends Individual {
+    power_reduction_pct: number;
+    accuracy_drop: number;
+    macs_total: number;
+}
 
 let detail = computed(() => {
     if (detailidx.value === null) {
         return null;
     } else {
-        return runData.value.data[detailidx.value];
+        let d = runData.value.data[detailidx.value] as Detail;
+        if (filteredAccurateData.value.length) {
+            d.power_reduction_pct = 100 - 100 * d.power / filteredAccurateData.value[0].power;
+            d.accuracy_drop = 100.0 * (filteredAccurateData.value[0].accuracy - d.accuracy);
+        }
+        //TODO
+        d.macs_total = 0;
+        return d;
     }
 });
 
+
 let detailAssignments = computed(() => {
-    if (!detail.value) return null;
+    if (detail.value === null) return null;
     let tiles = detail.value.tiles;
 
-    console.log('detailAssignments', detail.value);
-
-    //skip first tiles in chrom
-
     return {
-        layers: detail.value.chrom.slice(tiles).map((c) => ({
+        layers: (detail.value.chrom.slice(tiles) as number[]).map((c) => ({
             mul_index: c,
-            mul: detail.value.chrom[c],
+            mul: (detail.value && detail.value.chrom[c]) ? detail.value.chrom[c] : '',
             tiles: tiles
         })),
-        tiles: detail.value.chrom.slice(0, tiles)
-    };
+        tiles: (detail.value.chrom.slice(0, tiles) as string[]).map((c) => ({
+            mul: {
+                id: c,
+                power: multConfig.power[c],
+                area: multConfig.area[c],
+                delay: multConfig.delay[c],
+                power_pct: 100 - 100 * multConfig.power[c] / multConfig.power[multConfig.accurate],
+                area_pct: 100 - 100 * multConfig.area[c] / multConfig.area[multConfig.accurate],
+                delay_pct: 100 - 100 * multConfig.delay[c] / multConfig.delay[multConfig.accurate],
+                ep_pct: multConfig.ep_pct[c],
+                mae_pct: multConfig.mae_pct[c],
+                mre_pct: multConfig.mre_pct[c],
+                wce_pct: multConfig.wce_pct[c],
+                wcre_pct: multConfig.wcre_pct[c]
+            }
+        }))
+    } as ResNetAssignment;
 });
 
 
-let updateRunIdx = (evt) => {
+let updateRunIdx = (evt: any) => {
     let rect = evt.target.getBoundingClientRect();
     let x = evt.clientX - rect.left;
     let w = rect.right - rect.left;
@@ -393,4 +554,5 @@ console.log(getRunData(filteredData.value, runs.value[0]))
     color: var(--bs-success) !important;
     background-color: var(--bs-success-bg-subtle) !important
 }
+
 </style>

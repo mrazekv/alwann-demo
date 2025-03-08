@@ -25,7 +25,7 @@
     </button>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { defineProps, defineEmits, computed } from 'vue';
 
 const props = defineProps({

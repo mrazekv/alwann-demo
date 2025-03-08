@@ -6,7 +6,7 @@
 import { ref, watch, watchEffect, onMounted, defineProps, defineEmits } from "vue";
 
 import Plotly from 'plotly.js-dist';
-import { Individual } from "../database";
+import type { Individual } from "../database";
 
 const props = defineProps({
     data: {
@@ -61,6 +61,7 @@ var t3 = {
     // no lines
     mode: 'markers',
     marker: { size: 12, color: '#000000' },
+    hovertemplate: 'Power: %{x:.3f} mW<br>Accuracy: %{y:.2f}%<extra></extra>',
     showlegend: false,
 };
 var plotly_data = [t1, t2, t3];
@@ -89,6 +90,7 @@ onMounted(() => {
 
     plotly.value.on('plotly_click', function (data: any) {
         const ind = data.points[0].pointIndex;
+        if (!data.points[0].data.records || (data.points[0].data.records.length <= ind)) return;
         //console.log(props/.data.fullData[ind]);
         //    showDetails(document.querySelector<HTMLDivElement>("#elementDetails")!, data.points[0].data.fullData[ind], model);
         //alert("klik " + data.points[0].x + " ");
