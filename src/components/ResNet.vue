@@ -148,7 +148,7 @@
 
                     <rect x="35.773" y="27.256" width="5.8795" :height="item.box1h*20.158" :fill="item.box1fill" stroke="none" />
                     <!-- <rect x="35.773" y="27.256" width="5.8795" :height="item.box1h*20.158" fill="url(#hatch)" stroke="none" /> -->
-                    <rect x="35.773" :y="27.256+item.box2h*20.158" width="5.8795" :height="(1-item.box2h)*20.158" fill="url(#hatch)" stroke="none" />
+                    <rect x="35.773" :y="27.256+item.box1h*20.158" width="5.8795" :height="(1-item.box1h)*20.158" fill="url(#hatch)" stroke="none" />
 
 
                     <rect x="35.773" y="27.256" width="5.8795" height="20.158" fill="none"
@@ -265,7 +265,7 @@ interface TileLegend {
     fill: string;
 }
 
-let items = ref({ first: { name: 'Conv2D-1', boxfill: '#fff', boxh:1 }, b2: [], b4: [], bfill:'#f0f0f0' } as ResnetConfig);
+let items = ref({ first: { name: 'Conv2D-1', boxfill: '#fff', boxh:1 }, b2: [], b4: [], bfill:'#cccccc' } as ResnetConfig);
 let legend = ref([] as TileLegend[]);
 let viewbox = ref([0, 0, 10, 1].join(' '));
 let output_x = ref(0);
