@@ -78,12 +78,11 @@
             </div>
             <div class="col-md-5">
 
-                <label class="form-label">Iteration: {{ runidx + 1 }} / {{ runs.length }}</label>
-
+                <label class="form-label">Iteration: {{ runidx + 1 }} / <a class="last" href="#" @click.prevent="gotoFinal()" >{{ runs.length }}</a></label>
                 <div class="d-flex align-items-center">
                     <div class="progress flex-grow-1 me-4" @click="updateRunIdx($event)">
                         <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
-                            :style="{ width: `${(100 * runidx / runs.length).toFixed(0)}%` }"></div>
+                            :style="{ width: `${(100 * runidx / (runs.length-1)).toFixed(0)}%` }"></div>
                     </div>
                     <RoundButton v-model="isPlaying" />
                 </div>
@@ -91,12 +90,15 @@
         </div>
 
         <br>
-        <Graph :data="plotdata" :data2="plotdata2" :highlight="(detailidx === null) ? -1 : detailidx"
+        <Graph :data="plotdata" :data2="plotdata2" :highlight="detailid"
             @point-clicked="pointClicked" />
 
         <div v-if="detail">
             <h3 class="pb-2 mb-4 border-bottom">
-                Detail of candidate solution #{{ detailidx }}
+                <span v-if="!detailid.accurate">
+                Detail of candidate solution #{{ detailid.idx }}
+                </span>
+                <span v-else>Detail of accurate solution</span> 
             </h3>
 
 
@@ -187,11 +189,8 @@
             <ResNet :size="detail.multconf.length" :assignment="detailAssignments" :colors="colors" />
 
             <div>
-            Computational cost of each layer: 
-            <span v-for="(item, index) in modelinfo.layer_macs" :key="index">
-                <span v-if="index > 0">, </span>
-                {{ (item/1e6).toFixed(1) }}M
-            </span>
+            Computational cost of each convolutional layer: 
+            <span v-for="(item, index) in modelinfo.layer_macs" :key="index"><span v-if="index > 0">, </span>{{ (item/1e6).toFixed(1) }}M</span>
             MACs
             </div>
           
@@ -450,7 +449,7 @@ var models = Array.from(new Set(data.map((d) => d["model"]))).map((m: string) =>
 
 let selected = ref({ model: (models.length > 1) ? models[1].value : '', array: '' });
 
-let detailidx = ref(null as number | null);
+let detailid = ref({idx: null as number | null, accurate: false});
 //let detail = ref(null as Individual | null);
 
 let arrays = computed(() => {
@@ -483,7 +482,7 @@ function updatedata() {
 
 function updaterundata() {
     runData.value = getRunData(filteredData.value, runidx.value % runs.value.length);
-
+    
     //sort rundata data according to power and accuracy pair
     runData.value.data.sort((a, b) => {
         if (a["power"] === b["power"]) {
@@ -512,7 +511,7 @@ watch(() => selected.value.model + '.' + selected.value.array, (newVal, oldVal) 
 
     //reset animation
     runidx.value = 0;
-    detailidx.value = null;
+    detailid.value.idx = null;
     //detail.value = null;
     updaterundata();
 });
@@ -544,29 +543,31 @@ watch(runidx, (newVal, oldVal) => {
 
 let pointClicked = (evt: any) => {
     if (!evt) return;
-    console.log('point', evt, evt.index);
     isPlaying.value = false;
-    //detail.value = evt;
-    detailidx.value = evt.index;
+    if (evt.id == 2) {
+        //accurate multiplier
+        detailid.value.idx = 0;
+        detailid.value.accurate = true;
+    } else {
+        detailid.value.idx = evt.index;
+        detailid.value.accurate = false;
+    }
 };
 
 interface Detail extends Individual {
     power_reduction_pct: number;
     accuracy_drop: number;
-    macs_total: number;
 }
 
 let detail = computed(() => {
-    if (detailidx.value === null) {
+    if (detailid.value.idx === null) {
         return null;
     } else {
-        let d = runData.value.data[detailidx.value] as Detail;
+        let d = ((detailid.value.accurate) ? filteredAccurateData.value[0] : runData.value.data[detailid.value.idx]) as Detail;
         if (filteredAccurateData.value.length) {
             d.power_reduction_pct = 100 - 100 * d.power / filteredAccurateData.value[0].power;
             d.accuracy_drop = 100.0 * (filteredAccurateData.value[0].accuracy - d.accuracy);
         }
-        //TODO
-        d.macs_total = 0;
         return d;
     }
 });
@@ -621,6 +622,11 @@ let updateRunIdx = (evt: any) => {
     runidx.value = idx;
 }
 
+let gotoFinal = () => {
+    isPlaying.value = false;
+    runidx.value = runs.value.length - 1;
+}
+
 updatedata();
 
 console.log(runs.value);
@@ -658,4 +664,7 @@ console.log(getRunData(filteredData.value, runs.value[0]))
     background-color: var(--bs-success-bg-subtle) !important
 }
 
+a.last {
+    text-decoration: none;
+}
 </style>

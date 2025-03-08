@@ -18,8 +18,8 @@ const props = defineProps({
         default: { x: [], y: [], records: [] },
     },
     highlight: {
-        type: Number,
-        default: -1,
+        type: Object,
+        default: { idx: -1, accurate: false},
     }
 });
 
@@ -31,10 +31,11 @@ var t1 = {
     x: [0.1, 0.5] as number[],
     y: [10, 50] as number[],
     records: [] as Individual[],
+    recordid: 1,
     type: 'scatter',
     // no lines
     mode: 'markers',
-    marker: { size: 12, color: '#e4002b' },
+    marker: { size: 12, color: '#e4002b' as string|string[] },
     hovertemplate: 'Power: %{x:.3f} mW<br>Accuracy: %{y:.2f}%<extra></extra>',
     // hide legend
     //showlegend: true
@@ -45,6 +46,7 @@ var t2 = {
     x: [] as number[],
     y: [] as number[],
     records: [] as Individual[],
+    recordid: 2,
     type: 'scatter',
     // no lines
     mode: 'markers',
@@ -96,26 +98,31 @@ onMounted(() => {
         //alert("klik " + data.points[0].x + " ");
         // get the power value
         //data.points[0].data.fullData[ind]
-        emit('point-clicked', { data: data.points[0].data, record: data.points[0].data.records[ind], index: ind });
+        emit('point-clicked', { id: data.points[0].data.recordid, data: data.points[0].data, record: data.points[0].data.records[ind], index: ind });
     });
 
 
     watchEffect(() => {
         if (!plotly.value) return;
         console.log('plot new data');
-        t1.x = [...props.data.x];
-        t1.y = [...props.data.y];
-        t1.records = [...props.data.records];
+        t1.x = [...props.data.x]; //[...props.data.x,...props.data2.x];
+        t1.y = [...props.data.y]; //[...props.data.y,...props.data2.y];
+        t1.records = [...props.data.records]; //[...props.data.records,...props.data2.records];
+        //t1.marker.color = [...props.data.records.map((r: Individual) => r.isAccurate ? '#808080' : '#e4002b'), ...props.data2.records.map((r: Individual) => '#808080')];
+            
+
         //console.log('t1', t1, plotly.value);
+       
         t2.x = [...props.data2.x];
         t2.y = [...props.data2.y];
         t2.records = [...props.data2.records];
 
         t3.x = [];
         t3.y = [];
-        if ((props.highlight >= 0) && (props.highlight < props.data.x.length)) {
-            t3.x = [props.data.x[props.highlight]];
-            t3.y = [props.data.y[props.highlight]];
+        let hilid = (props.highlight.accurate) ? props.data2 : props.data;
+        if ((props.highlight.idx >= 0) && (props.highlight.idx  < hilid.x.length)) {
+            t3.x = [hilid.x[props.highlight.idx ]];
+            t3.y = [hilid.y[props.highlight.idx ]];
         }
         //console.log('t2', t2, plotly.value);
         Plotly.redraw(plotly.value);
