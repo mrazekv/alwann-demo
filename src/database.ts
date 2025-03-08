@@ -44,4 +44,5 @@ export interface ResNetTileInfo {
 export interface ResNetAssignment {
     layers: ResNetLayerAssignment[];
     tiles: ResNetTileInfo[];
+    mapseq: number[];
 };

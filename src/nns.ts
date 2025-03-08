@@ -1,15 +1,15 @@
-interface NNConfig {
-  [key: string]: {
-    layers: {
-      [layer: string]: number;
-    };
-    layers_list: string[];
-    network: string;
-    multcnt: number;
+export interface NNConfigItem {
+  layers: {
+    [layer: string]: number;
   };
+  layers_list: string[];
+  network: string;
+  multcnt: number;
 }
 
-
+export interface NNConfig {
+  [key: string]: NNConfigItem;
+}
 
 export const nnConfig: NNConfig = {
   "resnet_8_v2": {

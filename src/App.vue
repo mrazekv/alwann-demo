@@ -173,7 +173,7 @@
                                 Computational complexity
                             </h6>
                             <span class="h2 mb-0">
-                                {{ (detail.macs_total) ? detail.macs_total.toFixed(0) : '&mdash;' }} <small>MACs</small>
+                                {{ (modelinfo) ? (modelinfo.multcnt/1e6).toFixed(2) : '&mdash;' }}M <small>MACs</small>
                             </span>
                             <br>&nbsp;
                         </div>
@@ -186,6 +186,15 @@
 
             <ResNet :size="detail.multconf.length" :assignment="detailAssignments" :colors="colors" />
 
+            <div>
+            Computational cost of each layer: 
+            <span v-for="(item, index) in modelinfo.layer_macs" :key="index">
+                <span v-if="index > 0">, </span>
+                {{ (item/1e6).toFixed(1) }}M
+            </span>
+            MACs
+            </div>
+          
             <div v-if="detailAssignments" class="mt-3">
                 <h3>Designed HW accelerator</h3>
                 <h4>Structure</h4>
@@ -307,8 +316,90 @@
                 </table>
 
 
-                <h4>Computational plan</h4>
-                TODO
+                <h4>Computational plan</h4>              
+                Example (not related to the evolved design)<br><br>
+                <svg width="139.56mm" height="34.885mm" version="1.1" viewBox="0 0 139.56 34.885" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+ <defs>
+  <marker id="marker5416" overflow="visible" orient="auto">
+   <path transform="scale(-.6)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="#f00" fill-rule="evenodd" stroke="#f00" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+  <marker id="TriangleOutL" overflow="visible" orient="auto">
+   <path transform="scale(.8)" d="m5.77 0-8.65 5v-10z" fill-rule="evenodd" stroke="#000" stroke-width="1pt"/>
+  </marker>
+  <marker id="marker5416-5" overflow="visible" orient="auto">
+   <path transform="scale(-.6)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="#f00" fill-rule="evenodd" stroke="#f00" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+  <marker id="marker5416-2" overflow="visible" orient="auto">
+   <path transform="scale(-.6)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="#f00" fill-rule="evenodd" stroke="#f00" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+  <marker id="marker5416-59" overflow="visible" orient="auto">
+   <path transform="scale(-.6)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="#f00" fill-rule="evenodd" stroke="#f00" stroke-linejoin="round" stroke-width=".625"/>
+  </marker>
+ </defs>
+ <g transform="translate(-20.029 -132.43)">
+  <rect x="38.012" y="138.65" width="121.53" height="28.575" fill="#ccc"/>
+  <g fill="none" stroke="#000" stroke-dasharray="0.264, 0.264" stroke-width=".264">
+   <path d="m38.1 138.96h121.36"/>
+   <path d="m38.1 144.6h121.36"/>
+   <path d="m38.1 150.24h121.36"/>
+   <path d="m38.1 155.89h121.36"/>
+   <path d="m38.1 161.53h121.36"/>
+   <path d="m38.1 167.18h121.36"/>
+  </g>
+  <g fill="#000000" font-family="sans-serif" letter-spacing="0px" word-spacing="0px">
+   <g stroke-width=".26458">
+    <text x="21.959648" y="147.24031" style="line-height:0%" xml:space="preserve"><tspan x="21.959648" y="147.24031" font-size="3.5278px" stroke-width=".26458" style="line-height:1.25">Tile T1</tspan></text>
+    <text x="21.959648" y="153.32965" style="line-height:0%" xml:space="preserve"><tspan x="21.959648" y="153.32965" font-size="3.5278px" stroke-width=".26458" style="line-height:1.25">Tile T2</tspan></text>
+    <text x="21.959648" y="159.4147" style="line-height:0%" xml:space="preserve"><tspan x="21.959648" y="159.4147" font-size="3.5278px" stroke-width=".26458" style="line-height:1.25">Tile T3</tspan></text>
+    <text x="21.959648" y="142.83774" style="line-height:0%" xml:space="preserve"><tspan x="21.959648" y="142.83774" font-size="3.5278px" stroke-width=".26458" style="line-height:1.25">Mem<tspan baseline-shift="sub" font-size="2.1167px">read</tspan></tspan></text>
+   </g>
+   <text x="34.560432" y="165.27179" stroke-width="1px" text-align="end" text-anchor="end" style="line-height:0%" xml:space="preserve"><tspan x="34.560432" y="165.27179" font-size="3.5278px" style="line-height:1.25">Mem<tspan baseline-shift="sub" font-size="2.1167px">write</tspan></tspan></text>
+  </g>
+  <g stroke="#000" stroke-width=".264">
+   <rect x="38.1" y="138.96" width="31.044" height="5.6444" fill="#fff"/>
+   <rect x="43.744" y="144.6" width="31.044" height="5.6444" :fill="colors[0]"/>
+   <rect x="46.567" y="150.24" width="31.044" height="5.6444" :fill="colors[1]"/>
+   <rect x="40.922" y="155.89" width="31.044" height="5.6444" :fill="colors[2]"/>
+   <rect x="49.389" y="161.53" width="31.044" height="5.6444" fill="#fff"/>
+   <rect x="80.433" y="138.96" width="31.044" height="5.6444" fill="#fff"/>
+   <rect x="86.078" y="144.6" width="31.044" height="5.6444" :fill="colors[0]"/>
+   <rect x="83.256" y="150.24" width="31.044" height="5.6444" :fill="colors[1]"/>
+   <rect x="88.9" y="155.89" width="31.044" height="5.6444" :fill="colors[2]"/>
+   <rect x="91.722" y="161.53" width="31.044" height="5.6444" fill="#fff"/>
+   <rect x="122.77" y="138.96" width="31.044" height="5.6444" fill="#fff"/>
+   <rect x="125.59" y="144.6" width="31.044" height="5.6444" :fill="colors[0]"/>
+   <rect x="128.41" y="161.53" width="31.044" height="5.6444" fill="#fff"/>
+  </g>
+  <g fill="none" stroke="#f00" stroke-width=".182">
+   <path d="m38.1 144.6c1e-5 2.8222 0.56445 11.571 2.54 14.111" marker-end="url(#marker5416)"/>
+   <path d="m40.922 155.89c0-2.8222 0.28222-5.6444 2.2578-8.1844" marker-end="url(#marker5416-5)"/>
+   <path d="m43.744 150.24c0 1.4111 0 1.4111 2.2578 2.8222" marker-end="url(#marker5416-2)"/>
+   <path d="m46.567 155.89c0 2.8222 0.28222 5.9267 2.2578 8.4667" marker-end="url(#marker5416-59)"/>
+  </g>
+  <g fill="#000000" font-family="sans-serif" letter-spacing="0px" word-spacing="0px">
+   <g stroke-width=".564" text-anchor="middle">
+    <text x="56.463387" y="160.12653" text-align="center" style="line-height:0%" xml:space="preserve"><tspan x="56.463387" y="160.12653" font-size="3.8806px" style="line-height:1.25">L1</tspan></text>
+    <text x="59.205086" y="148.86226" text-align="center" style="line-height:0%" xml:space="preserve"><tspan x="59.205086" y="148.86226" font-size="3.8806px" style="line-height:1.25">L2</tspan></text>
+    <text x="62.047203" y="154.47736" text-align="center" style="line-height:0%" xml:space="preserve"><tspan x="62.047203" y="154.47736" font-size="3.8806px" style="line-height:1.25">L3</tspan></text>
+    <text x="98.683983" y="154.47736" text-align="center" style="line-height:0%" xml:space="preserve"><tspan x="98.683983" y="154.47736" font-size="3.8806px" style="line-height:1.25">L4</tspan></text>
+    <text x="101.5498" y="148.80354" text-align="center" style="line-height:0%" xml:space="preserve"><tspan x="101.5498" y="148.80354" font-size="3.8806px" style="line-height:1.25">L5</tspan></text>
+    <text x="104.33981" y="160.11894" text-align="center" style="line-height:0%" xml:space="preserve"><tspan x="104.33981" y="160.11894" font-size="3.8806px" style="line-height:1.25">L6</tspan></text>
+    <text x="141.04575" y="148.83292" text-align="center" style="line-height:0%" xml:space="preserve"><tspan x="141.04575" y="148.83292" font-size="3.8806px" style="line-height:1.25">L7</tspan></text>
+   </g>
+   <text x="46.667" y="135.53645" stroke-width="1px" text-align="end" text-anchor="end" style="line-height:0%" xml:space="preserve"><tspan x="46.667" y="135.53645" font-size="3.5278px" style="line-height:1.25">Time</tspan></text>
+  </g>
+  <path d="m38.1 136.13h23.989" fill="none" marker-end="url(#TriangleOutL)" stroke="#000" stroke-width=".282"/>
+  <path d="m38.1 167.18v-28.222" fill="none" stroke="#000" stroke-dasharray="0.282, 0.282" stroke-width=".282"/>
+  <g fill="#000000" font-family="sans-serif" letter-spacing="0px" stroke-width="1px" text-anchor="end" word-spacing="0px">
+   <text x="54.774254" y="143.47214" text-align="end" style="line-height:0%" xml:space="preserve"><tspan x="54.774254" y="143.47214" font-size="3.8806px" style="line-height:1.25">R</tspan></text>
+   <text x="97.107597" y="143.18846" text-align="end" style="line-height:0%" xml:space="preserve"><tspan x="97.107597" y="143.18846" font-size="3.8806px" style="line-height:1.25">R</tspan></text>
+   <text x="139.44092" y="143.18846" text-align="end" style="line-height:0%" xml:space="preserve"><tspan x="139.44092" y="143.18846" font-size="3.8806px" style="line-height:1.25">R</tspan></text>
+   <text x="66.827705" y="165.76624" text-align="end" style="line-height:0%" xml:space="preserve"><tspan x="66.827705" y="165.76624" font-size="3.8806px" style="line-height:1.25">W</tspan></text>
+   <text x="109.16103" y="165.76624" text-align="end" style="line-height:0%" xml:space="preserve"><tspan x="109.16103" y="165.76624" font-size="3.8806px" style="line-height:1.25">W</tspan></text>
+   <text x="145.84991" y="165.76624" text-align="end" style="line-height:0%" xml:space="preserve"><tspan x="145.84991" y="165.76624" font-size="3.8806px" style="line-height:1.25">W</tspan></text>
+  </g>
+ </g>
+</svg>
             </div>
 
         </div>
@@ -330,6 +421,7 @@ import type { Individual, DataType, ResNetAssignment } from "./database";
 import data_ from "@/../data/data.json";
 import accurate_data_ from "@/../data/accurate.json";
 import { nnConfig, multConfig } from './nns.ts';
+import type {NNConfigItem} from './nns.ts'; 
 
 const data: DataType[] = data_ as DataType[];
 const accurate_data: DataType[] = accurate_data_ as DataType[];
@@ -479,6 +571,15 @@ let detail = computed(() => {
     }
 });
 
+interface NNDetail extends NNConfigItem {
+    layer_macs: number[];
+}
+
+let modelinfo = computed(() => {
+    let d = nnConfig[selected.value.model] as NNDetail;
+    d.layer_macs = d.layers_list.map((l : string) => d.layers[l]);
+    return d;
+});
 
 let detailAssignments = computed(() => {
     if (detail.value === null) return null;
@@ -491,6 +592,7 @@ let detailAssignments = computed(() => {
             mul_power_ratio: (detail.value && detail.value.chrom[c]) ? multConfig.power[detail.value.chrom[c]] / multConfig.power[multConfig.accurate] : 1.0,
             tiles: tiles
         })),
+        mapseq: detail.value.chrom.slice(tiles),
         tiles: (detail.value.chrom.slice(0, tiles) as string[]).map((c) => ({
             mul: {
                 id: c,
