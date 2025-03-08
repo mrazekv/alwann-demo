@@ -488,6 +488,7 @@ let detailAssignments = computed(() => {
         layers: (detail.value.chrom.slice(tiles) as number[]).map((c) => ({
             mul_index: c,
             mul: (detail.value && detail.value.chrom[c]) ? detail.value.chrom[c] : '',
+            mul_power_ratio: (detail.value && detail.value.chrom[c]) ? multConfig.power[detail.value.chrom[c]] / multConfig.power[multConfig.accurate] : 1.0,
             tiles: tiles
         })),
         tiles: (detail.value.chrom.slice(0, tiles) as string[]).map((c) => ({

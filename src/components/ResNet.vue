@@ -8,6 +8,9 @@
                         fill="context-stroke" fill-rule="evenodd" stroke="context-stroke" stroke-linejoin="round"
                         stroke-width=".625" />
                 </marker>
+                <pattern id="hatch" patternUnits="userSpaceOnUse" width="2" height="2">
+                 <path d="M-0.5,0.5 l1,-1 M0,2 l2,-2 M1.5,2.5 l1,-1" style="stroke:black; stroke-width:0.2; opacity:0.5" />
+                </pattern>
             </defs>
 
             <!-- input -->
@@ -16,7 +19,11 @@
                     <rect x="35.269" y="27.256" width="5.8795" height="20.158" fill="#ccc" opacity=".99"
                         stroke-dasharray="0.53, 0.53" stroke-linecap="round" stroke-miterlimit="10"
                         stroke-width=".265" />
-                    <rect x="43.483" y="27.256" width="5.8795" height="20.158" :fill="items.first.boxfill" opacity=".99"
+                        <rect x="43.483" y="27.256" width="5.8795" :height="items.first.boxh*20.158" :fill="items.first.boxfill" stroke="none" />
+                        <!-- <rect x="43.483" y="27.256" width="5.8795" :height="items.first.boxh*20.158" fill="url(#hatch)" stroke="none" /> -->
+                        <rect x="43.483" :y="27.256+items.first.boxh*20.158" width="5.8795" :height="(1-items.first.boxh)*20.158" fill="url(#hatch)" stroke="none" />
+
+                    <rect x="43.483" y="27.256" width="5.8795" height="20.158" fill="none" 
                         stroke-linecap="round" stroke-miterlimit="10" stroke-width=".26458" />
                     <path d="m41.149 37.476h1.8228" fill="none" marker-end="url(#Arrow2Send)" stroke-width=".26458px" />
                     <path d="m49.311 37.476h1.8228" fill="none" marker-end="url(#Arrow2Send)" stroke-width=".26458px" />
@@ -50,9 +57,17 @@
             <!-- block 2 -->
             <g v-for="(item, index) in items.b2" :key="index" :transform="`translate(${item.x}, ${item.y})`">
                 <g>
-                    <rect x="35.269" y="27.256" width="5.8795" height="20.158" :fill="item.box1fill" stroke="#000"
+
+                    <rect x="35.269" y="27.256" width="5.8795" :height="item.box1h*20.158" :fill="item.box1fill" stroke="none" />
+                    <rect x="35.269" :y="27.256+item.box1h*20.158" width="5.8795" :height="(1-item.box1h)*20.158" fill="url(#hatch)" stroke="none" />
+
+                    <rect x="35.269" y="27.256" width="5.8795" height="20.158" fill="none" stroke="#000"
                         stroke-linecap="round" stroke-miterlimit="10" stroke-width=".26458" />
-                    <rect x="43.483" y="27.256" width="5.8795" height="20.158" :fill="item.box2fill" stroke="#000"
+
+                    <rect x="43.483" y="27.256" width="5.8795" :height="item.box2h*20.158" :fill="item.box2fill" stroke="none" />
+                    <rect x="43.483" :y="27.256+item.box2h*20.158" width="5.8795" :height="(1-item.box2h)*20.158" fill="url(#hatch)" stroke="none" />
+
+                    <rect x="43.483" y="27.256" width="5.8795" height="20.158" fill="none" stroke="#000"
                         stroke-linecap="round" stroke-miterlimit="10" stroke-width=".26458" />
                     <g fill="none" stroke="#000" stroke-width=".26458px">
                         <path d="m41.149 37.476h1.8228" marker-end="url(#Arrow2Send)" />
@@ -94,7 +109,11 @@
                     stroke-width=".26458px" />
                 <path d="m41.642 37.476h1.3294" fill="none" marker-end="url(#Arrow2Send)" stroke="#000"
                     stroke-width=".26458px" />
-                <rect x="35.773" y="27.256" width="5.8795" height="20.158" :fill="item.box2fill" opacity=".99" stroke="#000"
+
+                <rect x="35.773" y="27.256" width="5.8795" :height="item.box2h*20.158" :fill="item.box2fill" stroke="none" />
+                <rect x="35.773" :y="27.256+item.box2h*20.158" width="5.8795" :height="(1-item.box2h)*20.158" fill="url(#hatch)" stroke="none" />
+
+                <rect x="35.773" y="27.256" width="5.8795" height="20.158" fill="none" stroke="#000"
                     stroke-linecap="round" stroke-miterlimit="10" stroke-width=".26458" />
                 <text transform="rotate(-90)" x="-37.549553" y="39.486286" fill="#4d4d4d" font-family="'Arial'"
                     font-size="2.4694px" stroke-width=".26458" style="line-height:1.25" xml:space="preserve">
@@ -126,7 +145,13 @@
                 <g transform="translate(-22.834)">
                     <path d="m41.642 37.476h1.3294" fill="none" marker-end="url(#Arrow2Send)" stroke="#000"
                         stroke-width=".26458px" />
-                    <rect x="35.773" y="27.256" width="5.8795" height="20.158" :fill="item.box1fill" opacity=".99"
+
+                    <rect x="35.773" y="27.256" width="5.8795" :height="item.box1h*20.158" :fill="item.box1fill" stroke="none" />
+                    <!-- <rect x="35.773" y="27.256" width="5.8795" :height="item.box1h*20.158" fill="url(#hatch)" stroke="none" /> -->
+                    <rect x="35.773" :y="27.256+item.box2h*20.158" width="5.8795" :height="(1-item.box2h)*20.158" fill="url(#hatch)" stroke="none" />
+
+
+                    <rect x="35.773" y="27.256" width="5.8795" height="20.158" fill="none"
                         stroke="#000" stroke-linecap="round" stroke-miterlimit="10" stroke-width=".26458" />
                     <text transform="rotate(-90)" x="-37.549553" y="39.486286" fill="#4d4d4d" font-family="'Arial'"
                         font-size="2.4694px" stroke-width=".26458" style="line-height:1.25" xml:space="preserve">
@@ -217,6 +242,8 @@ interface ResnetL {
     box2: string;
     box1fill: string;
     box2fill: string;
+    box1h: number;
+    box2h: number;
     r: boolean;
 }
 
@@ -224,6 +251,7 @@ interface ResnetConfig {
     first: {
         name: string;
         boxfill: string;
+        boxh: number;
     }
     b2: ResnetL[];
     b4: ResnetL[];
@@ -237,7 +265,7 @@ interface TileLegend {
     fill: string;
 }
 
-let items = ref({ first: { name: 'Conv2D-1', boxfill: '#fff' }, b2: [], b4: [], bfill:'#f0f0f0' } as ResnetConfig);
+let items = ref({ first: { name: 'Conv2D-1', boxfill: '#fff', boxh:1 }, b2: [], b4: [], bfill:'#f0f0f0' } as ResnetConfig);
 let legend = ref([] as TileLegend[]);
 let viewbox = ref([0, 0, 10, 1].join(' '));
 let output_x = ref(0);
@@ -250,12 +278,14 @@ let updateSvg = () => {
     let itms_max_x = 0;
     
     let ass = props.assignment || {layers:[], tiles:[]};
-    if (ass.layers.length)
+    if (ass.layers.length) {
         items.value.first.boxfill = props.colors[ass.layers[0].mul_index % props.colors.length];
+        items.value.first.boxh = ass.layers[0].mul_power_ratio;
+    }
     
     for (let i = 0; i < layers; i++) {
-        var el1 = (1+2*i < ass.layers.length) ? ass.layers[2*i+1] : { mul_index: i % props.colors.length };
-        var el2 = (1+2*i+1 < ass.layers.length) ? ass.layers[2*i+1+1] : { mul_index: i % props.colors.length };
+        var el1 = (1+2*i < ass.layers.length) ? ass.layers[2*i+1] : { mul_index: i % props.colors.length, mul_power_ratio:1 };
+        var el2 = (1+2*i+1 < ass.layers.length) ? ass.layers[2*i+1+1] : { mul_index: i % props.colors.length, mul_power_ratio:1 };
 
         let x = (props.size < 15) ? 13 + 39 * i : -9 + 16.5 * i;
         let xto = (props.size < 15) ? 25 + 39 * (i + 1) : -9 + 35 + 16.5 * (i + 1);
@@ -269,6 +299,8 @@ let updateSvg = () => {
             box2: '3x3, 128',
             box1fill: props.colors[el1.mul_index % props.colors.length],
             box2fill: props.colors[el2.mul_index % props.colors.length],
+            box1h: el1.mul_power_ratio,
+            box2h: el2.mul_power_ratio,
             r: i == (layers - 1)
         });
     }

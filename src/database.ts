@@ -20,6 +20,7 @@ export interface DataType {
 export interface ResNetLayerAssignment {
     mul_index: number;
     mul: string;
+    mul_power_ratio: number;
     tiles: number;
 }
 
