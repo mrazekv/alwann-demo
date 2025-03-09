@@ -308,7 +308,7 @@ let updateSvg = () => {
     itms_max_x += 15;
     items.value.b4 = (props.size < 15) ? itms : [];
     items.value.b2 = (props.size < 15) ? [] : itms;
-    console.log('show layers: ', props.size);
+    //console.log('show layers: ', props.size);
 
     let leg_max_x = 0;
     ass.tiles.map((t, i) => {
@@ -323,12 +323,12 @@ let updateSvg = () => {
         });
     });
 
-    console.log(legend.value);
+    //console.log(legend.value);
     viewbox.value = [0, 0, Math.max(itms_max_x, leg_max_x), 30 + 10].join(' ');
 };
 
 watchEffect(() => {
-    console.log('size', props.size);
+    //console.log('size', props.size);
     updateSvg();
 });
 

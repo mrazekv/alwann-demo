@@ -1,5 +1,5 @@
 <template>
-    <button @click="togglePlayPause" :class="{ 'playing': isPlaying }" class="round-button">
+    <button @click.prevent="togglePlayPause" :class="{ 'playing': isPlaying }" class="round-button">
         <span v-if="isPlaying">
 
             <svg height="24px" width="24px" style="fill: white" version="1.1" viewBox="0 0 512 512" xml:space="preserve"

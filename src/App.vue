@@ -777,8 +777,8 @@ let detail = computed(() => {
     if (detailid.value.idx === null) {
         return null;
     } else {
-        let d = ((detailid.value.accurate) ? filteredAccurateData.value[0] : runData.value.data[detailid.value.idx]) as Detail;
-        if (filteredAccurateData.value.length) {
+        let d = ((detailid.value.accurate) ? filteredAccurateData.value[0] : ((detailid.value.idx < runData.value.data.length) ?  runData.value.data[detailid.value.idx] : null)) as Detail;
+        if ((d!=null) && (filteredAccurateData.value.length)) {
             d.power_reduction_pct = 100 - 100 * d.power / filteredAccurateData.value[0].power;
             d.accuracy_drop = 100.0 * (filteredAccurateData.value[0].accuracy - d.accuracy);
         }
@@ -842,11 +842,10 @@ let gotoFinal = () => {
 }
 
 updatedata();
+updaterundata();
 
-console.log(runs.value);
-
-console.log(getRunData(filteredData.value, runs.value[0]))
-
+detailid.value.accurate = false;
+detailid.value.idx = getRunData(filteredData.value, getRuns(filteredData.value).splice(-1)[0]).data.length - 1;
 </script>
 
 <style scoped>
