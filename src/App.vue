@@ -2,7 +2,8 @@
     <BootstrapIcons />
     <div class="container px-4 py-5">
         <h2 class="pb-2 border-bottom">
-            <VutLogo :scale="50" /> AI accelerator design space exploration <QR class="float-end" qrtext="https://ehw.fit.vutbr.cz" />
+            <VutLogo :scale="50" /> AI accelerator design space exploration
+            <QR class="float-end" qrtext="https://ehw.fit.vutbr.cz" />
         </h2>
         <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
             <div class="col d-flex align-items-start">
@@ -78,11 +79,12 @@
             </div>
             <div class="col-md-5">
 
-                <label class="form-label">Iteration: {{ runidx + 1 }} / <a class="last" href="#" @click.prevent="gotoFinal()" >{{ runs.length }}</a></label>
+                <label class="form-label">Iteration: {{ runidx + 1 }} / <a class="last" href="#"
+                        @click.prevent="gotoFinal()">{{ runs.length }}</a></label>
                 <div class="d-flex align-items-center">
                     <div class="progress flex-grow-1 me-4" @click="updateRunIdx($event)">
                         <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
-                            :style="{ width: `${(100 * runidx / (runs.length-1)).toFixed(0)}%` }"></div>
+                            :style="{ width: `${(100 * runidx / (runs.length - 1)).toFixed(0)}%` }"></div>
                     </div>
                     <RoundButton v-model="isPlaying" />
                 </div>
@@ -90,20 +92,19 @@
         </div>
 
         <br>
-        <Graph :data="plotdata" :data2="plotdata2" :highlight="detailid"
-            @point-clicked="pointClicked" />
+        <Graph :data="plotdata" :data2="plotdata2" :highlight="detailid" @point-clicked="pointClicked" />
 
         <div v-if="detail">
             <h3 class="pb-2 mb-4 border-bottom">
                 <span v-if="!detailid.accurate">
-                Detail of candidate solution #{{ detailid.idx }}
+                    Detail of candidate solution #{{ detailid.idx }}
                 </span>
-                <span v-else>Detail of accurate solution</span> 
+                <span v-else>Detail of accurate solution</span>
             </h3>
 
 
             <div class="row cards1">
-                <div class="col-2">
+                <div class="col-md-2 col-sm-6">
                     <div class="card">
                         <div class="card-body">
                             <h6 class="text-uppercase text-body-secondary mb-2">
@@ -119,7 +120,7 @@
                     </div>
                 </div>
 
-                <div class="col-2">
+                <div class="col-md-2 col-sm-6">
                     <div class="card">
                         <div class="card-body">
                             <h6 class="text-uppercase text-body-secondary mb-2">
@@ -136,7 +137,7 @@
                     </div>
                 </div>
 
-                <div class="col-3">
+                <div class="col-md-3 col-sm-6">
                     <div class="card">
                         <div class="card-body">
                             <h6 class="text-uppercase text-body-secondary mb-2">
@@ -152,7 +153,7 @@
                     </div>
                 </div>
 
-                <div class="col-2">
+                <div class="col-md-2 col-sm-6">
                     <div class="card">
                         <div class="card-body">
                             <h6 class="text-uppercase text-body-secondary mb-2">
@@ -168,14 +169,15 @@
                     </div>
                 </div>
 
-                <div class="col-3">
+                <div class="col-md-3 col-sm-12">
                     <div class="card">
                         <div class="card-body">
                             <h6 class="text-uppercase text-body-secondary mb-2">
                                 Computational complexity
                             </h6>
                             <span class="h2 mb-0">
-                                {{ (modelinfo) ? (modelinfo.multcnt/1e6).toFixed(2) : '&mdash;' }}M <small>MACs</small>
+                                {{ (modelinfo) ? (modelinfo.multcnt / 1e6).toFixed(2) : '&mdash;' }}M
+                                <small>MACs</small>
                             </span>
                             <br>&nbsp;
                         </div>
@@ -189,15 +191,117 @@
             <ResNet :size="detail.multconf.length" :assignment="detailAssignments" :colors="colors" />
 
             <div>
-            Computational cost of each convolutional layer: 
-            <span v-for="(item, index) in modelinfo.layer_macs" :key="index"><span v-if="index > 0">, </span>{{ (item/1e6).toFixed(1) }}M</span>
-            MACs
+                Computational cost of each convolutional layer:
+                <span v-for="(item, index) in modelinfo.layer_macs" :key="index"><span v-if="index > 0">, </span>{{
+                    (item / 1e6).toFixed(1) }}M</span>
+                MACs
             </div>
 
-            <div>
-                Encoded candidate solution: {{ detail.chrom }}
+            <h4 class="mt-4">Encoded candidate solution:</h4>
+
+            <p class="mt-4 mb-4">
+                The encoded solution consist of two parts:
+            <ul>
+                <li>Multipliers mapping - i.e. assignment of approximate multipliers to each of {{ detail.tile }} tiles
+                </li>
+                <li>Layers mapping - i.e. assignment of each layer to a tile</li>
+            </ul>
+            The assignment of each layer to a tile gives arise a computational plan which influences the duration of the
+            inference on the considered HW accelerator.
+            </p>
+
+
+            <div class="chromroot">
+                <svg version="1.1" :viewBox="`0 0 ${detail.chrom.length * 7} 25`" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="Arrow2Send" overflow="visible" orient="auto">
+                            <path transform="matrix(-.3 0 0 -.3 .69 0)"
+                                d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z"
+                                fill="context-stroke" fill-rule="evenodd" stroke="context-stroke"
+                                stroke-linejoin="round" stroke-width=".625" />
+                        </marker>
+                        <marker id="Arrow2Sstart" overflow="visible" orient="auto">
+                            <path transform="scale(.3) translate(-2.3)"
+                                d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z"
+                                fill="context-stroke" fill-rule="evenodd" stroke="context-stroke"
+                                stroke-linejoin="round" stroke-width=".625" />
+                        </marker>
+
+                    </defs>
+
+                    <g id="gtiles" transform="translate(-12.175 -60)">
+                        <path :d="`m13 80.805h${detail.tiles * 7 - 1}`" fill="none" marker-end="url(#Arrow2Send)"
+                            marker-start="url(#Arrow2Sstart)" stroke="#000" stroke-width=".265" />
+                        <text x="27.028669" y="83.949165" fill="#000000" font-family="'Arial'" font-size="2.4694px"
+                            stroke-width=".58461" style="line-height:1.25" xml:space="preserve">
+                            <tspan :x="(2 * 13 + detail.tiles * 7 - 1) / 2" y="83.949165" fill="#000000" font-family="Arial"
+                                font-size="2.4694px" stroke-width=".58461" text-align="center" text-anchor="middle">
+                                multipliers</tspan>
+                        </text>
+                    </g>
+
+                    <g id="gmults" :transform="`translate(${-12.175 + detail.tiles * 7} -60)`">
+                        <path :d="`m13 80.805h${(detail.chrom.length - detail.tiles) * 7 - 1}`" fill="none"
+                            marker-end="url(#Arrow2Send)" marker-start="url(#Arrow2Sstart)" stroke="#000"
+                            stroke-width=".265" />
+                        <text x="27.028669" y="83.949165" fill="#000000" font-family="'Arial'" font-size="2.4694px"
+                            stroke-width=".58461" style="line-height:1.25" xml:space="preserve">
+                            <tspan :x="(2 * 13 + (detail.chrom.length - detail.tiles) * 7 - 1) / 2" y="83.949165" fill="#000000"
+                                font-family="Arial" font-size="2.4694px" stroke-width=".58461" text-align="center"
+                                text-anchor="middle">layer to tile mapping</tspan>
+                        </text>
+                    </g>
+
+                    <g v-for="(item, index) in detail.chrom" :key="index">
+                        <g :transform="`translate(${-19 + index * 7}, -60)`" v-if="index < detail.tiles">
+                            <rect x="19.855" y="64.965" width="5.8795" height="15" ry="1.4254" :fill="colors[index]"
+                                opacity=".99" stroke="#000" stroke-linecap="round" stroke-miterlimit="10"
+                                stroke-width=".26458" />
+                            <text x="22.693041" y="64.37944" fill="#000000" font-family="'Arial'" font-size="2.4694px"
+                                stroke-width=".58461" style="line-height:1.25" xml:space="preserve">
+                                <tspan x="22.693041" y="64.37944" fill="#000000" font-family="Arial"
+                                    font-size="2.4694px" stroke-width=".58461" text-align="center" text-anchor="middle">
+                                    T{{ index + 1 }}</tspan>
+                            </text>
+                            <text transform="rotate(-90)" x="-72.052246" y="24" fill="#000000" font-family="'Arial'"
+                                font-size="2.4694px" stroke-width=".26458" style="line-height:1.25"
+                                xml:space="preserve">
+                                <tspan x="-72.052246" y="24" fill="#000000" font-size="2.4694px" stroke-width=".26458"
+                                    text-align="center" text-anchor="middle">{{ item }}</tspan>
+                            </text>
+                        </g>
+                        <g :transform="`translate(${-19 + index * 7}, -60)`" v-if="index >= detail.tiles">
+
+
+
+                            <rect x="19.855" y="64.965" width="5.8795" height="15" ry="1.4254" fill="#f2f2f2"
+                                opacity=".99" stroke="#000" stroke-linecap="round" stroke-miterlimit="10"
+                                stroke-width=".26458" />
+                            <!-- <text x="22.724239" y="73.79982" fill="#000000" font-family="'Arial'" font-size="5.4564px"
+                                font-stretch="condensed" stroke-width=".58461" style="line-height:1.25"
+                                xml:space="preserve">
+                                <tspan x="22.724239" y="73.79982" fill="#000000" font-family="Arial"
+                                    font-size="5.4564px" font-stretch="condensed" stroke-width=".58461"
+                                    text-align="center" text-anchor="middle">{{ item }}</tspan>
+                            </text> -->
+                            <text transform="rotate(-90)" x="-72.052246" y="24" fill="#000000" font-family="'Arial'"
+                                font-size="2.5px" stroke-width=".26458" style="line-height:1.25" font-stretch="normal"
+                                xml:space="preserve">
+                                <tspan x="-72.052246" y="24" fill="#000000" text-align="center" text-anchor="middle">
+                                    TILE {{ item }}</tspan>
+                            </text>
+
+                            <text x="22.883718" y="64.405525" fill="#000000" font-family="'Arial'" font-size="2.4694px"
+                                stroke-width=".58461" style="line-height:1.25" xml:space="preserve">
+                                <tspan x="22.883718" y="64.405525" fill="#000000" font-family="Arial"
+                                    font-size="2.4694px" stroke-width=".58461" text-align="center" text-anchor="middle">
+                                    L{{ index - detail.tiles + 1 }}</tspan>
+                            </text>
+                        </g>
+                    </g>
+                </svg>
             </div>
-          
+
             <div v-if="detailAssignments" class="mt-3">
                 <h3>Designed HW accelerator</h3>
                 <h4>Structure</h4>
@@ -205,204 +309,307 @@
                 layers and memory unit.
                 The crossbar connects the tiles and the memory unit.
 
-                <div class="row mt-4">
-                    <div class="col-6">
-                        <svg height="100" version="1.1"
-                            :viewBox="`0 0 ${(detailAssignments.tiles.length - 1) * 30 + 25 + 34 + 20} 30.692`"
-                            xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#"
-                            xmlns:dc="http://purl.org/dc/elements/1.1/"
-                            xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-                            <g transform="translate(-7.805 -111)">
-                                <g id="gmem"
-                                    :transform="`translate(${(detailAssignments.tiles.length - 1) * 30 - 62.5},0)`">
-                                    <rect x="127" y="111.13" width="21.167" height="10.583" fill="#fff" stroke="#000"
-                                        stroke-width=".265" />
-                                    <text x="137.31866" y="117.353" fill="#000000" font-family="sans-serif"
-                                        font-size="3.5278px" letter-spacing="0px" stroke-width=".26458"
-                                        word-spacing="0px" style="line-height:1.25" xml:space="preserve">
-                                        <tspan x="137.31866" y="117.353" font-family="Arial" stroke-width=".26458"
-                                            text-align="center" text-anchor="middle">Memory</tspan>
-                                    </text>
-                                    <rect x="121.71" y="115.1" width="5.2917" height="2.6458" stroke="#000"
-                                        stroke-width=".26458" />
-                                </g>
-                                <g id="gcross">
-                                    <rect id="crossbar" x="34.396" y="112.46"
-                                        :width="(detailAssignments.tiles.length - 1) * 30 + 25" height="7.9375"
-                                        fill="#ccc" stroke="#000" stroke-width=".265" />
-                                    <text :x="(2 * 34.396 + (detailAssignments.tiles.length - 1) * 30 + 25) / 2"
-                                        y="117.70441" fill="#000000" font-family="sans-serif" font-size="3.5278px"
-                                        letter-spacing="0px" stroke-width=".26458" word-spacing="0px"
-                                        style="line-height:1.25" xml:space="preserve">
-                                        <tspan font-family="Arial" stroke-width=".26458" text-align="center"
-                                            text-anchor="middle">Cross Bar</tspan>
-                                    </text>
-                                </g>
-                                <g v-for="(item, index) in detailAssignments.tiles" :key="index"
-                                    :transform="`translate(${index * 30},0)`">
-                                    <rect transform="rotate(-90)" x="-125.69" y="44.979" width="5.2917" height="2.6458"
-                                        stroke="#000" stroke-width=".26458" />
-                                    <rect x="31.75" y="125.69" width="29.104" height="15.875" :fill="colors[index]"
-                                        stroke="#000" stroke-width=".265" />
-                                    <text x="46.513481" y="137.85172" fill="#000000" font-family="sans-serif"
-                                        font-size="3.5278px" letter-spacing="0px" stroke-width=".26458"
-                                        word-spacing="0px" style="line-height:1.25" xml:space="preserve">
-                                        <tspan x="46.513481" y="137.85172" font-family="Arial" stroke-width=".26458"
-                                            text-align="center" text-anchor="middle">{{ item.mul.id }}</tspan>
-                                    </text>
-                                    <text x="46.650414" y="131.52295" fill="#000000" font-family="sans-serif"
-                                        font-size="3.5278px" letter-spacing="0px" stroke-width=".26458"
-                                        word-spacing="0px" style="line-height:1.25" xml:space="preserve">
-                                        <tspan x="46.650414" y="131.52295" font-family="Arial" font-weight="bold"
-                                            stroke-width=".26458" text-align="center" text-anchor="middle">Tile #{{
-                                                index + 1
-                                            }}</tspan>
-                                    </text>
-                                </g>
-                                <g id="gother">
-                                    <rect x="7.9375" y="111.13" width="21.167" height="10.583" fill="#1a1a1a"
-                                        stroke="#000" stroke-width=".265" />
-                                    <text x="18.136606" y="115.58382" fill="#ffffff" font-family="Arial"
-                                        font-size="3.5278px" letter-spacing="0px" stroke-width=".26458"
-                                        text-anchor="middle" word-spacing="0px" style="line-height:1.05"
-                                        xml:space="preserve">
-                                        <tspan x="18.136606" y="115.58382" text-align="center">Other </tspan>
-                                        <tspan x="18.136606" y="119.32882" text-align="center">layers</tspan>
-                                    </text>
-                                    <rect x="29.104" y="115.1" width="5.2917" height="2.6458" stroke="#000"
-                                        stroke-width=".26458" />
-                                </g>
+                <div class="hwstruct">
+                    <svg height="100" version="1.1"
+                        :viewBox="`0 0 ${(detailAssignments.tiles.length - 1) * 30 + 25 + 34 + 20} 30.692`"
+                        xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+                        <g transform="translate(-7.805 -111)">
+                            <g id="gmem"
+                                :transform="`translate(${(detailAssignments.tiles.length - 1) * 30 - 62.5},0)`">
+                                <rect x="127" y="111.13" width="21.167" height="10.583" fill="#fff" stroke="#000"
+                                    stroke-width=".265" />
+                                <text x="137.31866" y="117.353" fill="#000000" font-family="sans-serif"
+                                    font-size="3.5278px" letter-spacing="0px" stroke-width=".26458" word-spacing="0px"
+                                    style="line-height:1.25" xml:space="preserve">
+                                    <tspan x="137.31866" y="117.353" font-family="Arial" stroke-width=".26458"
+                                        text-align="center" text-anchor="middle">Memory</tspan>
+                                </text>
+                                <rect x="121.71" y="115.1" width="5.2917" height="2.6458" stroke="#000"
+                                    stroke-width=".26458" />
                             </g>
-                        </svg>
-                    </div>
-                    <div class="col-6">
-
-                    </div>
+                            <g id="gcross">
+                                <rect id="crossbar" x="34.396" y="112.46"
+                                    :width="(detailAssignments.tiles.length - 1) * 30 + 25" height="7.9375" fill="#ccc"
+                                    stroke="#000" stroke-width=".265" />
+                                <text :x="(2 * 34.396 + (detailAssignments.tiles.length - 1) * 30 + 25) / 2"
+                                    y="117.70441" fill="#000000" font-family="sans-serif" font-size="3.5278px"
+                                    letter-spacing="0px" stroke-width=".26458" word-spacing="0px"
+                                    style="line-height:1.25" xml:space="preserve">
+                                    <tspan font-family="Arial" stroke-width=".26458" text-align="center"
+                                        text-anchor="middle">Cross Bar</tspan>
+                                </text>
+                            </g>
+                            <g v-for="(item, index) in detailAssignments.tiles" :key="index"
+                                :transform="`translate(${index * 30},0)`">
+                                <rect transform="rotate(-90)" x="-125.69" y="44.979" width="5.2917" height="2.6458"
+                                    stroke="#000" stroke-width=".26458" />
+                                <rect x="31.75" y="125.69" width="29.104" height="15.875" :fill="colors[index]"
+                                    stroke="#000" stroke-width=".265" />
+                                <text x="46.513481" y="137.85172" fill="#000000" font-family="sans-serif"
+                                    font-size="3.5278px" letter-spacing="0px" stroke-width=".26458" word-spacing="0px"
+                                    style="line-height:1.25" xml:space="preserve">
+                                    <tspan x="46.513481" y="137.85172" font-family="Arial" stroke-width=".26458"
+                                        text-align="center" text-anchor="middle">{{ item.mul.id }}</tspan>
+                                </text>
+                                <text x="46.650414" y="131.52295" fill="#000000" font-family="sans-serif"
+                                    font-size="3.5278px" letter-spacing="0px" stroke-width=".26458" word-spacing="0px"
+                                    style="line-height:1.25" xml:space="preserve">
+                                    <tspan x="46.650414" y="131.52295" font-family="Arial" font-weight="bold"
+                                        stroke-width=".26458" text-align="center" text-anchor="middle">Tile #{{
+                                            index + 1
+                                        }}</tspan>
+                                </text>
+                            </g>
+                            <g id="gother">
+                                <rect x="7.9375" y="111.13" width="21.167" height="10.583" fill="#1a1a1a" stroke="#000"
+                                    stroke-width=".265" />
+                                <text x="18.136606" y="115.58382" fill="#ffffff" font-family="Arial"
+                                    font-size="3.5278px" letter-spacing="0px" stroke-width=".26458" text-anchor="middle"
+                                    word-spacing="0px" style="line-height:1.05" xml:space="preserve">
+                                    <tspan x="18.136606" y="115.58382" text-align="center">Other </tspan>
+                                    <tspan x="18.136606" y="119.32882" text-align="center">layers</tspan>
+                                </text>
+                                <rect x="29.104" y="115.1" width="5.2917" height="2.6458" stroke="#000"
+                                    stroke-width=".26458" />
+                            </g>
+                        </g>
+                    </svg>
                 </div>
 
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th colspan="7" style="text-align: center">Parameters of the multipliers</th>
-                        </tr>
-                        <tr>
-                            <th></th>
-                            <th>multiplier</th>
-                            <th>power</th>
-                            <th>area</th>
-                            <th>delay</th>
-                            <th>ep</th>
-                            <th>mae</th>
-                            <th>mre</th>
-                            <th>wce</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(item, index) in detailAssignments.tiles" :key="index">
-                            <td><b>Tile #{{ index + 1 }}</b></td>
-                            <td>{{ item.mul.id }}</td>
-                            <td>{{ item.mul.power.toFixed(3) }} mW <span class="badge text-bg-success-subtle">{{
-                                -item.mul.power_pct.toFixed(2) }}%</span></td>
-                            <td>{{ item.mul.area.toFixed(3) }} <span class="badge text-bg-success-subtle">{{
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th colspan="7" style="text-align: center">Parameters of the multipliers</th>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <th>multiplier</th>
+                                <th>power</th>
+                                <th>area</th>
+                                <th>delay</th>
+                                <th>ep</th>
+                                <th>mae</th>
+                                <th>mre</th>
+                                <th>wce</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(item, index) in detailAssignments.tiles" :key="index">
+                                <td><b>Tile #{{ index + 1 }}</b></td>
+                                <td>{{ item.mul.id }}</td>
+                                <td>{{ item.mul.power.toFixed(3) }} mW <span class="badge text-bg-success-subtle">{{
+                                    -item.mul.power_pct.toFixed(2) }}%</span></td>
+                                <td>{{ item.mul.area.toFixed(3) }} <span class="badge text-bg-success-subtle">{{
                                     -item.mul.area_pct.toFixed(2) }}%</span></td>
-                            <td>{{ item.mul.delay.toFixed(3) }} <span class="badge text-bg-success-subtle">{{
-                                -item.mul.delay_pct.toFixed(2) }}%</span></td>
-                            <td>{{ item.mul.ep_pct.toFixed(2) }}%</td>
-                            <td>{{ item.mul.mae_pct.toFixed(2) }}%</td>
-                            <td>{{ item.mul.mre_pct.toFixed(2) }}%</td>
-                            <td>{{ item.mul.wce_pct.toFixed(2) }}%</td>
+                                <td>{{ item.mul.delay.toFixed(3) }} <span class="badge text-bg-success-subtle">{{
+                                    -item.mul.delay_pct.toFixed(2) }}%</span></td>
+                                <td>{{ item.mul.ep_pct.toFixed(2) }}%</td>
+                                <td>{{ item.mul.mae_pct.toFixed(2) }}%</td>
+                                <td>{{ item.mul.mre_pct.toFixed(2) }}%</td>
+                                <td>{{ item.mul.wce_pct.toFixed(2) }}%</td>
 
 
-                        </tr>
-                    </tbody>
-                </table>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
-
-                <h4>Computational plan</h4>              
+                <h4>Computational plan</h4>
                 Example (not related to the evolved design)<br><br>
-                <svg width="139.56mm" height="34.885mm" version="1.1" viewBox="0 0 139.56 34.885" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
- <defs>
-  <marker id="marker5416" overflow="visible" orient="auto">
-   <path transform="scale(-.6)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="#f00" fill-rule="evenodd" stroke="#f00" stroke-linejoin="round" stroke-width=".625"/>
-  </marker>
-  <marker id="TriangleOutL" overflow="visible" orient="auto">
-   <path transform="scale(.8)" d="m5.77 0-8.65 5v-10z" fill-rule="evenodd" stroke="#000" stroke-width="1pt"/>
-  </marker>
-  <marker id="marker5416-5" overflow="visible" orient="auto">
-   <path transform="scale(-.6)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="#f00" fill-rule="evenodd" stroke="#f00" stroke-linejoin="round" stroke-width=".625"/>
-  </marker>
-  <marker id="marker5416-2" overflow="visible" orient="auto">
-   <path transform="scale(-.6)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="#f00" fill-rule="evenodd" stroke="#f00" stroke-linejoin="round" stroke-width=".625"/>
-  </marker>
-  <marker id="marker5416-59" overflow="visible" orient="auto">
-   <path transform="scale(-.6)" d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z" fill="#f00" fill-rule="evenodd" stroke="#f00" stroke-linejoin="round" stroke-width=".625"/>
-  </marker>
- </defs>
- <g transform="translate(-20.029 -132.43)">
-  <rect x="38.012" y="138.65" width="121.53" height="28.575" fill="#ccc"/>
-  <g fill="none" stroke="#000" stroke-dasharray="0.264, 0.264" stroke-width=".264">
-   <path d="m38.1 138.96h121.36"/>
-   <path d="m38.1 144.6h121.36"/>
-   <path d="m38.1 150.24h121.36"/>
-   <path d="m38.1 155.89h121.36"/>
-   <path d="m38.1 161.53h121.36"/>
-   <path d="m38.1 167.18h121.36"/>
-  </g>
-  <g fill="#000000" font-family="sans-serif" letter-spacing="0px" word-spacing="0px">
-   <g stroke-width=".26458">
-    <text x="21.959648" y="147.24031" style="line-height:0%" xml:space="preserve"><tspan x="21.959648" y="147.24031" font-size="3.5278px" stroke-width=".26458" style="line-height:1.25">Tile T1</tspan></text>
-    <text x="21.959648" y="153.32965" style="line-height:0%" xml:space="preserve"><tspan x="21.959648" y="153.32965" font-size="3.5278px" stroke-width=".26458" style="line-height:1.25">Tile T2</tspan></text>
-    <text x="21.959648" y="159.4147" style="line-height:0%" xml:space="preserve"><tspan x="21.959648" y="159.4147" font-size="3.5278px" stroke-width=".26458" style="line-height:1.25">Tile T3</tspan></text>
-    <text x="21.959648" y="142.83774" style="line-height:0%" xml:space="preserve"><tspan x="21.959648" y="142.83774" font-size="3.5278px" stroke-width=".26458" style="line-height:1.25">Mem<tspan baseline-shift="sub" font-size="2.1167px">read</tspan></tspan></text>
-   </g>
-   <text x="34.560432" y="165.27179" stroke-width="1px" text-align="end" text-anchor="end" style="line-height:0%" xml:space="preserve"><tspan x="34.560432" y="165.27179" font-size="3.5278px" style="line-height:1.25">Mem<tspan baseline-shift="sub" font-size="2.1167px">write</tspan></tspan></text>
-  </g>
-  <g stroke="#000" stroke-width=".264">
-   <rect x="38.1" y="138.96" width="31.044" height="5.6444" fill="#fff"/>
-   <rect x="43.744" y="144.6" width="31.044" height="5.6444" :fill="colors[0]"/>
-   <rect x="46.567" y="150.24" width="31.044" height="5.6444" :fill="colors[1]"/>
-   <rect x="40.922" y="155.89" width="31.044" height="5.6444" :fill="colors[2]"/>
-   <rect x="49.389" y="161.53" width="31.044" height="5.6444" fill="#fff"/>
-   <rect x="80.433" y="138.96" width="31.044" height="5.6444" fill="#fff"/>
-   <rect x="86.078" y="144.6" width="31.044" height="5.6444" :fill="colors[0]"/>
-   <rect x="83.256" y="150.24" width="31.044" height="5.6444" :fill="colors[1]"/>
-   <rect x="88.9" y="155.89" width="31.044" height="5.6444" :fill="colors[2]"/>
-   <rect x="91.722" y="161.53" width="31.044" height="5.6444" fill="#fff"/>
-   <rect x="122.77" y="138.96" width="31.044" height="5.6444" fill="#fff"/>
-   <rect x="125.59" y="144.6" width="31.044" height="5.6444" :fill="colors[0]"/>
-   <rect x="128.41" y="161.53" width="31.044" height="5.6444" fill="#fff"/>
-  </g>
-  <g fill="none" stroke="#f00" stroke-width=".182">
-   <path d="m38.1 144.6c1e-5 2.8222 0.56445 11.571 2.54 14.111" marker-end="url(#marker5416)"/>
-   <path d="m40.922 155.89c0-2.8222 0.28222-5.6444 2.2578-8.1844" marker-end="url(#marker5416-5)"/>
-   <path d="m43.744 150.24c0 1.4111 0 1.4111 2.2578 2.8222" marker-end="url(#marker5416-2)"/>
-   <path d="m46.567 155.89c0 2.8222 0.28222 5.9267 2.2578 8.4667" marker-end="url(#marker5416-59)"/>
-  </g>
-  <g fill="#000000" font-family="sans-serif" letter-spacing="0px" word-spacing="0px">
-   <g stroke-width=".564" text-anchor="middle">
-    <text x="56.463387" y="160.12653" text-align="center" style="line-height:0%" xml:space="preserve"><tspan x="56.463387" y="160.12653" font-size="3.8806px" style="line-height:1.25">L1</tspan></text>
-    <text x="59.205086" y="148.86226" text-align="center" style="line-height:0%" xml:space="preserve"><tspan x="59.205086" y="148.86226" font-size="3.8806px" style="line-height:1.25">L2</tspan></text>
-    <text x="62.047203" y="154.47736" text-align="center" style="line-height:0%" xml:space="preserve"><tspan x="62.047203" y="154.47736" font-size="3.8806px" style="line-height:1.25">L3</tspan></text>
-    <text x="98.683983" y="154.47736" text-align="center" style="line-height:0%" xml:space="preserve"><tspan x="98.683983" y="154.47736" font-size="3.8806px" style="line-height:1.25">L4</tspan></text>
-    <text x="101.5498" y="148.80354" text-align="center" style="line-height:0%" xml:space="preserve"><tspan x="101.5498" y="148.80354" font-size="3.8806px" style="line-height:1.25">L5</tspan></text>
-    <text x="104.33981" y="160.11894" text-align="center" style="line-height:0%" xml:space="preserve"><tspan x="104.33981" y="160.11894" font-size="3.8806px" style="line-height:1.25">L6</tspan></text>
-    <text x="141.04575" y="148.83292" text-align="center" style="line-height:0%" xml:space="preserve"><tspan x="141.04575" y="148.83292" font-size="3.8806px" style="line-height:1.25">L7</tspan></text>
-   </g>
-   <text x="46.667" y="135.53645" stroke-width="1px" text-align="end" text-anchor="end" style="line-height:0%" xml:space="preserve"><tspan x="46.667" y="135.53645" font-size="3.5278px" style="line-height:1.25">Time</tspan></text>
-  </g>
-  <path d="m38.1 136.13h23.989" fill="none" marker-end="url(#TriangleOutL)" stroke="#000" stroke-width=".282"/>
-  <path d="m38.1 167.18v-28.222" fill="none" stroke="#000" stroke-dasharray="0.282, 0.282" stroke-width=".282"/>
-  <g fill="#000000" font-family="sans-serif" letter-spacing="0px" stroke-width="1px" text-anchor="end" word-spacing="0px">
-   <text x="54.774254" y="143.47214" text-align="end" style="line-height:0%" xml:space="preserve"><tspan x="54.774254" y="143.47214" font-size="3.8806px" style="line-height:1.25">R</tspan></text>
-   <text x="97.107597" y="143.18846" text-align="end" style="line-height:0%" xml:space="preserve"><tspan x="97.107597" y="143.18846" font-size="3.8806px" style="line-height:1.25">R</tspan></text>
-   <text x="139.44092" y="143.18846" text-align="end" style="line-height:0%" xml:space="preserve"><tspan x="139.44092" y="143.18846" font-size="3.8806px" style="line-height:1.25">R</tspan></text>
-   <text x="66.827705" y="165.76624" text-align="end" style="line-height:0%" xml:space="preserve"><tspan x="66.827705" y="165.76624" font-size="3.8806px" style="line-height:1.25">W</tspan></text>
-   <text x="109.16103" y="165.76624" text-align="end" style="line-height:0%" xml:space="preserve"><tspan x="109.16103" y="165.76624" font-size="3.8806px" style="line-height:1.25">W</tspan></text>
-   <text x="145.84991" y="165.76624" text-align="end" style="line-height:0%" xml:space="preserve"><tspan x="145.84991" y="165.76624" font-size="3.8806px" style="line-height:1.25">W</tspan></text>
-  </g>
- </g>
-</svg>
+                <div class="hwplan">
+                    <svg width="139.56mm" height="34.885mm" version="1.1" viewBox="0 0 139.56 34.885"
+                        xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#"
+                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                        xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+                        <defs>
+                            <marker id="marker5416" overflow="visible" orient="auto">
+                                <path transform="scale(-.6)"
+                                    d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z"
+                                    fill="#f00" fill-rule="evenodd" stroke="#f00" stroke-linejoin="round"
+                                    stroke-width=".625" />
+                            </marker>
+                            <marker id="TriangleOutL" overflow="visible" orient="auto">
+                                <path transform="scale(.8)" d="m5.77 0-8.65 5v-10z" fill-rule="evenodd" stroke="#000"
+                                    stroke-width="1pt" />
+                            </marker>
+                            <marker id="marker5416-5" overflow="visible" orient="auto">
+                                <path transform="scale(-.6)"
+                                    d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z"
+                                    fill="#f00" fill-rule="evenodd" stroke="#f00" stroke-linejoin="round"
+                                    stroke-width=".625" />
+                            </marker>
+                            <marker id="marker5416-2" overflow="visible" orient="auto">
+                                <path transform="scale(-.6)"
+                                    d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z"
+                                    fill="#f00" fill-rule="evenodd" stroke="#f00" stroke-linejoin="round"
+                                    stroke-width=".625" />
+                            </marker>
+                            <marker id="marker5416-59" overflow="visible" orient="auto">
+                                <path transform="scale(-.6)"
+                                    d="m8.7186 4.0337-10.926-4.0177 10.926-4.0177c-1.7455 2.3721-1.7354 5.6175-6e-7 8.0354z"
+                                    fill="#f00" fill-rule="evenodd" stroke="#f00" stroke-linejoin="round"
+                                    stroke-width=".625" />
+                            </marker>
+                        </defs>
+                        <g transform="translate(-20.029 -132.43)">
+                            <rect x="38.012" y="138.65" width="121.53" height="28.575" fill="#ccc" />
+                            <g fill="none" stroke="#000" stroke-dasharray="0.264, 0.264" stroke-width=".264">
+                                <path d="m38.1 138.96h121.36" />
+                                <path d="m38.1 144.6h121.36" />
+                                <path d="m38.1 150.24h121.36" />
+                                <path d="m38.1 155.89h121.36" />
+                                <path d="m38.1 161.53h121.36" />
+                                <path d="m38.1 167.18h121.36" />
+                            </g>
+                            <g fill="#000000" font-family="sans-serif" letter-spacing="0px" word-spacing="0px">
+                                <g stroke-width=".26458">
+                                    <text x="21.959648" y="147.24031" style="line-height:0%" xml:space="preserve">
+                                        <tspan x="21.959648" y="147.24031" font-size="3.5278px" stroke-width=".26458"
+                                            style="line-height:1.25">Tile T1</tspan>
+                                    </text>
+                                    <text x="21.959648" y="153.32965" style="line-height:0%" xml:space="preserve">
+                                        <tspan x="21.959648" y="153.32965" font-size="3.5278px" stroke-width=".26458"
+                                            style="line-height:1.25">Tile T2</tspan>
+                                    </text>
+                                    <text x="21.959648" y="159.4147" style="line-height:0%" xml:space="preserve">
+                                        <tspan x="21.959648" y="159.4147" font-size="3.5278px" stroke-width=".26458"
+                                            style="line-height:1.25">Tile T3</tspan>
+                                    </text>
+                                    <text x="21.959648" y="142.83774" style="line-height:0%" xml:space="preserve">
+                                        <tspan x="21.959648" y="142.83774" font-size="3.5278px" stroke-width=".26458"
+                                            style="line-height:1.25">Mem<tspan baseline-shift="sub"
+                                                font-size="2.1167px">
+                                                read</tspan>
+                                        </tspan>
+                                    </text>
+                                </g>
+                                <text x="34.560432" y="165.27179" stroke-width="1px" text-align="end" text-anchor="end"
+                                    style="line-height:0%" xml:space="preserve">
+                                    <tspan x="34.560432" y="165.27179" font-size="3.5278px" style="line-height:1.25">Mem
+                                        <tspan baseline-shift="sub" font-size="2.1167px">write</tspan>
+                                    </tspan>
+                                </text>
+                            </g>
+                            <g stroke="#000" stroke-width=".264">
+                                <rect x="38.1" y="138.96" width="31.044" height="5.6444" fill="#fff" />
+                                <rect x="43.744" y="144.6" width="31.044" height="5.6444" :fill="colors[0]" />
+                                <rect x="46.567" y="150.24" width="31.044" height="5.6444" :fill="colors[1]" />
+                                <rect x="40.922" y="155.89" width="31.044" height="5.6444" :fill="colors[2]" />
+                                <rect x="49.389" y="161.53" width="31.044" height="5.6444" fill="#fff" />
+                                <rect x="80.433" y="138.96" width="31.044" height="5.6444" fill="#fff" />
+                                <rect x="86.078" y="144.6" width="31.044" height="5.6444" :fill="colors[0]" />
+                                <rect x="83.256" y="150.24" width="31.044" height="5.6444" :fill="colors[1]" />
+                                <rect x="88.9" y="155.89" width="31.044" height="5.6444" :fill="colors[2]" />
+                                <rect x="91.722" y="161.53" width="31.044" height="5.6444" fill="#fff" />
+                                <rect x="122.77" y="138.96" width="31.044" height="5.6444" fill="#fff" />
+                                <rect x="125.59" y="144.6" width="31.044" height="5.6444" :fill="colors[0]" />
+                                <rect x="128.41" y="161.53" width="31.044" height="5.6444" fill="#fff" />
+                            </g>
+                            <g fill="none" stroke="#f00" stroke-width=".182">
+                                <path d="m38.1 144.6c1e-5 2.8222 0.56445 11.571 2.54 14.111"
+                                    marker-end="url(#marker5416)" />
+                                <path d="m40.922 155.89c0-2.8222 0.28222-5.6444 2.2578-8.1844"
+                                    marker-end="url(#marker5416-5)" />
+                                <path d="m43.744 150.24c0 1.4111 0 1.4111 2.2578 2.8222"
+                                    marker-end="url(#marker5416-2)" />
+                                <path d="m46.567 155.89c0 2.8222 0.28222 5.9267 2.2578 8.4667"
+                                    marker-end="url(#marker5416-59)" />
+                            </g>
+                            <g fill="#000000" font-family="sans-serif" letter-spacing="0px" word-spacing="0px">
+                                <g stroke-width=".564" text-anchor="middle">
+                                    <text x="56.463387" y="160.12653" text-align="center" style="line-height:0%"
+                                        xml:space="preserve">
+                                        <tspan x="56.463387" y="160.12653" font-size="3.8806px"
+                                            style="line-height:1.25">L1
+                                        </tspan>
+                                    </text>
+                                    <text x="59.205086" y="148.86226" text-align="center" style="line-height:0%"
+                                        xml:space="preserve">
+                                        <tspan x="59.205086" y="148.86226" font-size="3.8806px"
+                                            style="line-height:1.25">L2
+                                        </tspan>
+                                    </text>
+                                    <text x="62.047203" y="154.47736" text-align="center" style="line-height:0%"
+                                        xml:space="preserve">
+                                        <tspan x="62.047203" y="154.47736" font-size="3.8806px"
+                                            style="line-height:1.25">L3
+                                        </tspan>
+                                    </text>
+                                    <text x="98.683983" y="154.47736" text-align="center" style="line-height:0%"
+                                        xml:space="preserve">
+                                        <tspan x="98.683983" y="154.47736" font-size="3.8806px"
+                                            style="line-height:1.25">L4
+                                        </tspan>
+                                    </text>
+                                    <text x="101.5498" y="148.80354" text-align="center" style="line-height:0%"
+                                        xml:space="preserve">
+                                        <tspan x="101.5498" y="148.80354" font-size="3.8806px" style="line-height:1.25">
+                                            L5
+                                        </tspan>
+                                    </text>
+                                    <text x="104.33981" y="160.11894" text-align="center" style="line-height:0%"
+                                        xml:space="preserve">
+                                        <tspan x="104.33981" y="160.11894" font-size="3.8806px"
+                                            style="line-height:1.25">L6
+                                        </tspan>
+                                    </text>
+                                    <text x="141.04575" y="148.83292" text-align="center" style="line-height:0%"
+                                        xml:space="preserve">
+                                        <tspan x="141.04575" y="148.83292" font-size="3.8806px"
+                                            style="line-height:1.25">L7
+                                        </tspan>
+                                    </text>
+                                </g>
+                                <text x="46.667" y="135.53645" stroke-width="1px" text-align="end" text-anchor="end"
+                                    style="line-height:0%" xml:space="preserve">
+                                    <tspan x="46.667" y="135.53645" font-size="3.5278px" style="line-height:1.25">Time
+                                    </tspan>
+                                </text>
+                            </g>
+                            <path d="m38.1 136.13h23.989" fill="none" marker-end="url(#TriangleOutL)" stroke="#000"
+                                stroke-width=".282" />
+                            <path d="m38.1 167.18v-28.222" fill="none" stroke="#000" stroke-dasharray="0.282, 0.282"
+                                stroke-width=".282" />
+                            <g fill="#000000" font-family="sans-serif" letter-spacing="0px" stroke-width="1px"
+                                text-anchor="end" word-spacing="0px">
+                                <text x="54.774254" y="143.47214" text-align="end" style="line-height:0%"
+                                    xml:space="preserve">
+                                    <tspan x="54.774254" y="143.47214" font-size="3.8806px" style="line-height:1.25">R
+                                    </tspan>
+                                </text>
+                                <text x="97.107597" y="143.18846" text-align="end" style="line-height:0%"
+                                    xml:space="preserve">
+                                    <tspan x="97.107597" y="143.18846" font-size="3.8806px" style="line-height:1.25">R
+                                    </tspan>
+                                </text>
+                                <text x="139.44092" y="143.18846" text-align="end" style="line-height:0%"
+                                    xml:space="preserve">
+                                    <tspan x="139.44092" y="143.18846" font-size="3.8806px" style="line-height:1.25">R
+                                    </tspan>
+                                </text>
+                                <text x="66.827705" y="165.76624" text-align="end" style="line-height:0%"
+                                    xml:space="preserve">
+                                    <tspan x="66.827705" y="165.76624" font-size="3.8806px" style="line-height:1.25">W
+                                    </tspan>
+                                </text>
+                                <text x="109.16103" y="165.76624" text-align="end" style="line-height:0%"
+                                    xml:space="preserve">
+                                    <tspan x="109.16103" y="165.76624" font-size="3.8806px" style="line-height:1.25">W
+                                    </tspan>
+                                </text>
+                                <text x="145.84991" y="165.76624" text-align="end" style="line-height:0%"
+                                    xml:space="preserve">
+                                    <tspan x="145.84991" y="165.76624" font-size="3.8806px" style="line-height:1.25">W
+                                    </tspan>
+                                </text>
+                            </g>
+                        </g>
+                    </svg>
+                </div>
             </div>
 
         </div>
@@ -425,7 +632,7 @@ import type { Individual, DataType, ResNetAssignment } from "./database";
 import data_ from "@/../data/data.json";
 import accurate_data_ from "@/../data/accurate.json";
 import { nnConfig, multConfig } from './nns.ts';
-import type {NNConfigItem} from './nns.ts'; 
+import type { NNConfigItem } from './nns.ts';
 
 const data: DataType[] = data_ as DataType[];
 const accurate_data: DataType[] = accurate_data_ as DataType[];
@@ -454,7 +661,7 @@ var models = Array.from(new Set(data.map((d) => d["model"]))).map((m: string) =>
 
 let selected = ref({ model: (models.length > 1) ? models[1].value : '', array: '' });
 
-let detailid = ref({idx: null as number | null, accurate: false});
+let detailid = ref({ idx: null as number | null, accurate: false });
 //let detail = ref(null as Individual | null);
 
 let arrays = computed(() => {
@@ -487,7 +694,7 @@ function updatedata() {
 
 function updaterundata() {
     runData.value = getRunData(filteredData.value, runidx.value % runs.value.length);
-    
+
     //sort rundata data according to power and accuracy pair
     runData.value.data.sort((a, b) => {
         if (a["power"] === b["power"]) {
@@ -583,7 +790,7 @@ interface NNDetail extends NNConfigItem {
 
 let modelinfo = computed(() => {
     let d = nnConfig[selected.value.model] as NNDetail;
-    d.layer_macs = d.layers_list.map((l : string) => d.layers[l]);
+    d.layer_macs = d.layers_list.map((l: string) => d.layers[l]);
     return d;
 });
 
@@ -671,5 +878,26 @@ console.log(getRunData(filteredData.value, runs.value[0]))
 
 a.last {
     text-decoration: none;
+}
+
+
+div.chromroot {
+    width: 100%;
+    overflow-x: auto;
+    margin-left: 20px;
+
+    svg {
+        height: 130px;
+    }
+}
+
+div.hwstruct {
+    width: 100%;
+    overflow-x: auto;
+}
+
+div.hwplan {
+    width: 100%;
+    overflow-x: auto;
 }
 </style>
