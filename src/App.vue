@@ -2,7 +2,7 @@
     <BootstrapIcons />
     <div class="container px-4 py-5">
         <h2 class="pb-2 border-bottom">
-            <VutLogo :scale="50" /> AI accelerator design space exploration
+            <VutLogo :scale="50" /> AI accelerator design space exploration <QR class="float-end" qrtext="https://ehw.fit.vutbr.cz" />
         </h2>
         <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
             <div class="col d-flex align-items-start">
@@ -414,6 +414,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, provide } from "vue";
 
+import QR from "./components/QR.vue";
 import VutLogo from "./components/VutLogo.vue";
 import BootstrapIcons from "./components/BootstrapIcons.vue";
 import Graph from "./components/Graph.vue";
