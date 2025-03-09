@@ -290,7 +290,7 @@
                                 font-size="2.5px" stroke-width=".26458" style="line-height:1.25" font-stretch="normal"
                                 xml:space="preserve">
                                 <tspan x="-72.052246" y="24" fill="#000000" text-align="center" text-anchor="middle">
-                                    TILE {{ item }}</tspan>
+                                    TILE {{ parseInt(item) + 1 }}</tspan>
                             </text>
 
                             <text x="22.883718" y="64.405525" fill="#000000" font-family="'Arial'" font-size="2.4694px"
