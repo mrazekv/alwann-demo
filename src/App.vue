@@ -201,18 +201,20 @@
 
             <p class="mt-4 mb-4">
                 The encoded solution consist of two parts:
+            </p>
             <ul>
                 <li>Multipliers mapping - i.e. assignment of approximate multipliers to each of {{ detail.tile }} tiles
                 </li>
                 <li>Layers mapping - i.e. assignment of each layer to a tile</li>
             </ul>
+            <p>
             The assignment of each layer to a tile gives arise a computational plan which influences the duration of the
             inference on the considered HW accelerator.
             </p>
 
 
             <div class="chromroot">
-                <svg version="1.1" :viewBox="`0 0 ${detail.chrom.length * 7} 25`" xmlns="http://www.w3.org/2000/svg">
+                <svg version="1.1" :viewBox="`0 0 ${detail.chrom.length * 7} 26`" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                         <marker id="Arrow2Send" overflow="visible" orient="auto">
                             <path transform="matrix(-.3 0 0 -.3 .69 0)"
@@ -229,7 +231,7 @@
 
                     </defs>
 
-                    <g id="gtiles" transform="translate(-12.175 -60)">
+                    <g id="gtiles" transform="translate(-12.175 -59)">
                         <path :d="`m13 80.805h${detail.tiles * 7 - 1}`" fill="none" marker-end="url(#Arrow2Send)"
                             marker-start="url(#Arrow2Sstart)" stroke="#000" stroke-width=".265" />
                         <text x="27.028669" y="83.949165" fill="#000000" font-family="'Arial'" font-size="2.4694px"
@@ -240,7 +242,7 @@
                         </text>
                     </g>
 
-                    <g id="gmults" :transform="`translate(${-12.175 + detail.tiles * 7} -60)`">
+                    <g id="gmults" :transform="`translate(${-12.175 + detail.tiles * 7} -59)`">
                         <path :d="`m13 80.805h${(detail.chrom.length - detail.tiles) * 7 - 1}`" fill="none"
                             marker-end="url(#Arrow2Send)" marker-start="url(#Arrow2Sstart)" stroke="#000"
                             stroke-width=".265" />
@@ -254,7 +256,7 @@
 
                     <g v-for="(item, index) in detail.chrom" :key="index">
                         <g :transform="`translate(${-19 + index * 7}, -60)`" v-if="index < detail.tiles">
-                            <rect x="19.855" y="64.965" width="5.8795" height="15" ry="1.4254" :fill="colors[index]"
+                            <rect x="19.855" y="64.965" width="5.8795" height="16" ry="1.4254" :fill="colors[index]"
                                 opacity=".99" stroke="#000" stroke-linecap="round" stroke-miterlimit="10"
                                 stroke-width=".26458" />
                             <text x="22.693041" y="64.37944" fill="#000000" font-family="'Arial'" font-size="2.4694px"
@@ -263,10 +265,10 @@
                                     font-size="2.4694px" stroke-width=".58461" text-align="center" text-anchor="middle">
                                     T{{ index + 1 }}</tspan>
                             </text>
-                            <text transform="rotate(-90)" x="-72.052246" y="24" fill="#000000" font-family="'Arial'"
+                            <text transform="rotate(-90)" x="-73" y="24" fill="#000000" font-family="'Arial'"
                                 font-size="2.4694px" stroke-width=".26458" style="line-height:1.25"
                                 xml:space="preserve">
-                                <tspan x="-72.052246" y="24" fill="#000000" font-size="2.4694px" stroke-width=".26458"
+                                <tspan x="-73" y="24" fill="#000000" font-size="2.4694px" stroke-width=".26458"
                                     text-align="center" text-anchor="middle">{{ item }}</tspan>
                             </text>
                         </g>
@@ -274,7 +276,7 @@
 
 
 
-                            <rect x="19.855" y="64.965" width="5.8795" height="15" ry="1.4254" fill="#f2f2f2"
+                            <rect x="19.855" y="64.965" width="5.8795" height="16" ry="1.4254" fill="#f2f2f2"
                                 opacity=".99" stroke="#000" stroke-linecap="round" stroke-miterlimit="10"
                                 stroke-width=".26458" />
                             <!-- <text x="22.724239" y="73.79982" fill="#000000" font-family="'Arial'" font-size="5.4564px"
@@ -887,7 +889,7 @@ div.chromroot {
     margin-left: 20px;
 
     svg {
-        height: 130px;
+        height: 140px;
     }
 }
 
@@ -899,5 +901,9 @@ div.hwstruct {
 div.hwplan {
     width: 100%;
     overflow-x: auto;
+}
+
+svg text {
+    user-select: none;
 }
 </style>

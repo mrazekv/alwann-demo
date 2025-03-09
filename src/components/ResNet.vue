@@ -355,4 +355,8 @@ svg {
     height: 180px;
     /*max-height:200px;*/
 }
+
+svg text{
+   user-select: none;
+}
 </style>
