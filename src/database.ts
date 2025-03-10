@@ -22,6 +22,7 @@ export interface ResNetLayerAssignment {
     mul: string;
     mul_power_ratio: number;
     tiles: number;
+    cost: number;
 }
 
 export interface ResNetTileInfo {

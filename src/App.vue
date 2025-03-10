@@ -188,7 +188,7 @@
             <!-- Mapping: {{ detail.chrom.slice(detail.tiles) }}
             <br> -->
 
-            <ResNet :size="detail.multconf.length" :assignment="detailAssignments" :colors="colors" />
+            <ResNet :size="detail.multconf.length" :assignment="detailAssignments" :colors="colors"  />
 
             <div>
                 Computational cost of each convolutional layer:
@@ -799,13 +799,14 @@ let modelinfo = computed(() => {
 let detailAssignments = computed(() => {
     if (detail.value === null) return null;
     let tiles = detail.value.tiles;
-
+    const macs = modelinfo.value.layer_macs;
     return {
-        layers: (detail.value.chrom.slice(tiles) as number[]).map((c) => ({
+        layers: (detail.value.chrom.slice(tiles) as number[]).map((c, index) => ({
             mul_index: c,
             mul: (detail.value && detail.value.chrom[c]) ? detail.value.chrom[c] : '',
             mul_power_ratio: (detail.value && detail.value.chrom[c]) ? multConfig.power[detail.value.chrom[c]] / multConfig.power[multConfig.accurate] : 1.0,
-            tiles: tiles
+            tiles: tiles,
+            cost: (index < macs.length) ? macs[index] : 0,
         })),
         mapseq: detail.value.chrom.slice(tiles),
         tiles: (detail.value.chrom.slice(0, tiles) as string[]).map((c) => ({
