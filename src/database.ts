@@ -1,7 +1,8 @@
 export interface Individual {
     power: number;
     accuracy: number;
-    multconf: string[];
+    //multconf: string[];
+    layers: number;
     [key: string]: any;
     chrom: (string|number)[];
     style: string;

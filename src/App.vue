@@ -188,7 +188,7 @@
             <!-- Mapping: {{ detail.chrom.slice(detail.tiles) }}
             <br> -->
 
-            <ResNet :size="detail.multconf.length" :assignment="detailAssignments" :colors="colors"  />
+            <ResNet :size="detail.layers" :assignment="detailAssignments" :colors="colors"  />
 
             <div>
                 Computational cost of each convolutional layer:
@@ -290,7 +290,7 @@
                                 font-size="2.5px" stroke-width=".26458" style="line-height:1.25" font-stretch="normal"
                                 xml:space="preserve">
                                 <tspan x="-72.052246" y="24" fill="#000000" text-align="center" text-anchor="middle">
-                                    TILE {{ parseInt(item) + 1 }}</tspan>
+                                    TILE {{ parseInt(item.toString()) + 1 }}</tspan>
                             </text>
 
                             <text x="22.883718" y="64.405525" fill="#000000" font-family="'Arial'" font-size="2.4694px"
