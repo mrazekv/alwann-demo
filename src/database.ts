@@ -24,7 +24,7 @@ export interface ResNetLayerAssignment {
     mul_power_ratio: number;
     tiles: number;
     cost: number;
-}
+};
 
 export interface ResNetTileInfo {
     mul: {
@@ -41,7 +41,7 @@ export interface ResNetTileInfo {
         wce_pct: number;
         wcre_pct: number;
     };
-}
+};
 
 export interface ResNetAssignment {
     layers: ResNetLayerAssignment[];
