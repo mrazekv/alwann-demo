@@ -5,6 +5,47 @@
             <VutLogo :scale="50" /> AI accelerator design space exploration
             <QR class="float-end" qrtext="https://ehw.fit.vutbr.cz" />
         </h2>
+        <div class="row g+4 py-5">
+            <div class="col-md-8">
+                <Algorithm />
+            </div>
+            <div class="col-md-4">
+                <div class="col d-flex align-items-start">
+                    <div
+                        class="icon-square text-bg-light d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                        <svg class="bi" width="1em" height="1em">
+                            <use xlink:href="#cpu-fill" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="fs-4">Featured title</h3>
+                        <p>
+                            Paragraph of text beneath the heading to explain the heading. We'll
+                            add onto it with another sentence and probably just keep going until
+                            we run out of words.
+                        </p>
+                    </div>
+                </div>
+                <div class="col d-flex align-items-start">
+                    <div
+                        class="icon-square text-bg-light d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
+                        <svg class="bi" width="1em" height="1em">
+                            <use xlink:href="#tools" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="fs-4">Featured title</h3>
+                        <p>
+                            Paragraph of text beneath the heading to explain the heading. We'll
+                            add onto it with another sentence and probably just keep going until
+                            we run out of words.
+                        </p>
+                        <!--                    <a href="#" class="btn btn-primary"> Primary button </a> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--
         <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
             <div class="col d-flex align-items-start">
                 <div
@@ -52,10 +93,10 @@
                         add onto it with another sentence and probably just keep going until
                         we run out of words.
                     </p>
-                    <!--                    <a href="#" class="btn btn-primary"> Primary button </a> -->
+                   
                 </div>
             </div>
-        </div>
+        </div>-->
 
         <h3 class="pb-2 mb-4 border-bottom">
             DNN optimization
@@ -188,7 +229,7 @@
             <!-- Mapping: {{ detail.chrom.slice(detail.tiles) }}
             <br> -->
 
-            <ResNet :size="detail.layers" :assignment="detailAssignments" :colors="colors"  />
+            <ResNet :size="detail.layers" :assignment="detailAssignments" :colors="colors" />
 
             <div>
                 Computational cost of each convolutional layer:
@@ -208,8 +249,9 @@
                 <li>Layers mapping - i.e. assignment of each layer to a tile</li>
             </ul>
             <p>
-            The assignment of each layer to a tile gives arise a computational plan which influences the duration of the
-            inference on the considered HW accelerator.
+                The assignment of each layer to a tile gives arise a computational plan which influences the duration of
+                the
+                inference on the considered HW accelerator.
             </p>
 
 
@@ -236,8 +278,9 @@
                             marker-start="url(#Arrow2Sstart)" stroke="#000" stroke-width=".265" />
                         <text x="27.028669" y="83.949165" fill="#000000" font-family="'Arial'" font-size="2.4694px"
                             stroke-width=".58461" style="line-height:1.25" xml:space="preserve">
-                            <tspan :x="(2 * 13 + detail.tiles * 7 - 1) / 2" y="83.949165" fill="#000000" font-family="Arial"
-                                font-size="2.4694px" stroke-width=".58461" text-align="center" text-anchor="middle">
+                            <tspan :x="(2 * 13 + detail.tiles * 7 - 1) / 2" y="83.949165" fill="#000000"
+                                font-family="Arial" font-size="2.4694px" stroke-width=".58461" text-align="center"
+                                text-anchor="middle">
                                 multipliers</tspan>
                         </text>
                     </g>
@@ -248,9 +291,9 @@
                             stroke-width=".265" />
                         <text x="27.028669" y="83.949165" fill="#000000" font-family="'Arial'" font-size="2.4694px"
                             stroke-width=".58461" style="line-height:1.25" xml:space="preserve">
-                            <tspan :x="(2 * 13 + (detail.chrom.length - detail.tiles) * 7 - 1) / 2" y="83.949165" fill="#000000"
-                                font-family="Arial" font-size="2.4694px" stroke-width=".58461" text-align="center"
-                                text-anchor="middle">layer to tile mapping</tspan>
+                            <tspan :x="(2 * 13 + (detail.chrom.length - detail.tiles) * 7 - 1) / 2" y="83.949165"
+                                fill="#000000" font-family="Arial" font-size="2.4694px" stroke-width=".58461"
+                                text-align="center" text-anchor="middle">layer to tile mapping</tspan>
                         </text>
                     </g>
 
@@ -422,7 +465,7 @@
 
                 <h4>Computational plan</h4>
                 <p>Computational plan for HW accelerator utilizing tile power gating approach.</p>
-                
+
                 <PlanPowerGating :size="detail.layers" :assignment="detailAssignments" :colors="colors" />
             </div>
 
@@ -436,6 +479,7 @@
 import { ref, computed, watch, onMounted, provide } from "vue";
 
 import QR from "./components/QR.vue";
+import Algorithm from "./components/Algorithm.vue";
 import VutLogo from "./components/VutLogo.vue";
 import BootstrapIcons from "./components/BootstrapIcons.vue";
 import Graph from "./components/Graph.vue";
@@ -590,8 +634,8 @@ let detail = computed(() => {
     if (detailid.value.idx === null) {
         return null;
     } else {
-        let d = ((detailid.value.accurate) ? filteredAccurateData.value[0] : ((detailid.value.idx < runData.value.data.length) ?  runData.value.data[detailid.value.idx] : null)) as Detail;
-        if ((d!=null) && (filteredAccurateData.value.length)) {
+        let d = ((detailid.value.accurate) ? filteredAccurateData.value[0] : ((detailid.value.idx < runData.value.data.length) ? runData.value.data[detailid.value.idx] : null)) as Detail;
+        if ((d != null) && (filteredAccurateData.value.length)) {
             d.power_reduction_pct = 100 - 100 * d.power / filteredAccurateData.value[0].power;
             d.accuracy_drop = 100.0 * (filteredAccurateData.value[0].accuracy - d.accuracy);
         }
