@@ -4,7 +4,7 @@
     </div>
 </template>
 
-<script>
+<script setup lang="ts">
 
 import { defineProps, defineComponent } from 'vue';
 const props = defineProps({
@@ -14,7 +14,7 @@ const props = defineProps({
     },*/
   });
 </script>
-  
+
 <style scoped>
 /* Add any styles you need here */
 .algorithm {
@@ -23,5 +23,13 @@ const props = defineProps({
     align-items: center;
     margin-top: 20px;
     max-width: 100%;    
+
+    
+}
+
+.algorithm > img {
+      max-width: 100%;
+      height: auto;
+      overflow-x: auto;
 }
 </style>

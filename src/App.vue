@@ -18,11 +18,9 @@
                         </svg>
                     </div>
                     <div>
-                        <h3 class="fs-4">Featured title</h3>
+                        <h3 class="fs-4">HW acceleration of neural networks</h3>
                         <p>
-                            Paragraph of text beneath the heading to explain the heading. We'll
-                            add onto it with another sentence and probably just keep going until
-                            we run out of words.
+                            The HW accelerator leverages systolic arrays to optimize the inference process, focusing primarily on accelerating multiplication operations with efficient memory usage. These operations, numbering in the millions for each image, form the backbone of the computational workload.
                         </p>
                     </div>
                 </div>
@@ -34,11 +32,9 @@
                         </svg>
                     </div>
                     <div>
-                        <h3 class="fs-4">Featured title</h3>
+                        <h3 class="fs-4">AI optimization</h3>
                         <p>
-                            Paragraph of text beneath the heading to explain the heading. We'll
-                            add onto it with another sentence and probably just keep going until
-                            we run out of words.
+                            Evolutionary algorithms optimize the design by searching for power-efficient multiplier implementations and strategically assigning these operations to the multipliers within the systolic array, enhancing overall quality and energy tradeoff.
                         </p>
                         <!--                    <a href="#" class="btn btn-primary"> Primary button </a> -->
                     </div>
