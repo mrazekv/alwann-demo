@@ -1,6 +1,6 @@
 <template>
     <div class="algorithm">
-        <img src="/resnet_alg.svg" alt="ResNet Algorithm" />
+        <img src="/resnet_alg2.svg" alt="ResNet Algorithm" />
     </div>
 </template>
 
